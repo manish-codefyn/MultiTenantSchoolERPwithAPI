@@ -1,0 +1,62 @@
+{% load i18n %}
+
+<li>
+    <a href="javascript:;" class="has-arrow">
+        <div class="parent-icon"><i class="bx bx-message-square-dots"></i></div>
+        <div class="menu-title">{% trans "Communications" %}</div>
+    </a>
+
+    <ul>
+        {% if user.is_authenticated and user.is_staff %}
+        <li>
+            <a href="{% url 'communications:dashboard' %}">
+                <div class="parent-icon"><i class="bx bx-home-alt"></i></div>
+                <div class="menu-title">{% trans "Dashboard" %}</div>
+            </a>
+        </li>
+        {% endif %}
+
+        <li class="menu-label">{% trans "Messaging" %}</li>
+        
+        <li>
+            <a href="{% url 'communications:communication_list' %}">
+                <div class="parent-icon"><i class="bx bx-history"></i></div>
+                <div class="menu-title">{% trans "Message History" %}</div>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'communications:communication_create' %}">
+                <div class="parent-icon"><i class="bx bx-plus-circle"></i></div>
+                <div class="menu-title">{% trans "Compose New" %}</div>
+            </a>
+        </li>
+
+        {% if user.is_staff %}
+        <li class="menu-label">{% trans "Campaigns & Templates" %}</li>
+
+        <li>
+            <a href="{% url 'communications:campaign_list' %}">
+                <div class="parent-icon"><i class="bx bx-megaphone"></i></div>
+                <div class="menu-title">{% trans "Campaigns" %}</div>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'communications:template_list' %}">
+                <div class="parent-icon"><i class="bx bx-layout"></i></div>
+                <div class="menu-title">{% trans "Templates" %}</div>
+            </a>
+        </li>
+
+        <li class="menu-label">{% trans "Configuration" %}</li>
+
+        <li>
+            <a href="{% url 'communications:channel_list' %}">
+                <div class="parent-icon"><i class="bx bx-cog"></i></div>
+                <div class="menu-title">{% trans "Channels" %}</div>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</li>
