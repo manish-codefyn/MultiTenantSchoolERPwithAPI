@@ -184,8 +184,10 @@ class User(AbstractUser, BaseModel):
     
     # Profile
     avatar = models.ImageField(upload_to='user_avatars/', null=True, blank=True)
-    timezone = models.CharField(max_length=50, default='UTC')
-    language = models.CharField(max_length=10, default='en')
+    timezone = models.CharField(max_length=50, 
+    default='UTC')
+    language = models.CharField(max_length=10,
+     default='en')
     
     # In your existing user.py file, update the role section:
 

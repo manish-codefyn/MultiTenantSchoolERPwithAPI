@@ -168,3 +168,5 @@ fix_*.py
 *.crt
 *.p12
 secrets/
+
+!school_erp_app/lib/

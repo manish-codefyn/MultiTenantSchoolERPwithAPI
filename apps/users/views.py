@@ -17,11 +17,8 @@ from apps.core.views import (BaseTemplateView, BaseListView, BaseCreateView,
 BaseUpdateView, BaseDeleteView,BaseDetailView,BaseFormView,BaseView)
 from .models import User
 from .forms import (
-    TenantAwareUserCreationForm, 
     TenantAwareUserChangeForm,
-    TenantAwarePasswordChangeForm,
-    UserProfileForm
-)
+    TenantAwareUserCreationForm)
 from django.core.exceptions import ValidationError
 from apps.core.permissions.mixins import PermissionRequiredMixin
 from apps.core.utils.tenant import get_current_tenant 
@@ -95,6 +92,7 @@ class UserDetailView(BaseDetailView):
     context_object_name = 'user_obj'
     permission_required = 'users.view_user'
 
+
 class UserCreateView(BaseCreateView):
     model = User
     form_class = TenantAwareUserCreationForm
@@ -156,61 +154,7 @@ class UserDeleteView(BaseDeleteView):
         messages.success(self.request, f"User {user.email} deleted successfully.")
         return super().delete(request, *args, **kwargs)
 
-# ==================== PROFILE MANAGEMENT ====================
 
-class ProfileView(BaseTemplateView):
-    template_name = 'users/profile.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user_obj'] = self.request.user
-        return context
-
-class ProfileUpdateView(BaseUpdateView):
-    model = User
-    form_class = UserProfileForm
-    template_name = 'users/profile_edit.html'
-    success_url = reverse_lazy('users:profile')
-    
-    def get_object(self):
-        return self.request.user
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        # Don't require tenant for profile updates
-        if 'tenant' in kwargs:
-            del kwargs['tenant']
-        return kwargs
-    
-    def form_valid(self, form):
-        messages.success(self.request, "Profile updated successfully.")
-        return super().form_valid(form)
-
-class ChangePasswordView(BaseFormView):
-    template_name = 'users/change_password.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = TenantAwarePasswordChangeForm(user=self.request.user)
-        return context
-    
-    def post(self, request, *args, **kwargs):
-        form = TenantAwarePasswordChangeForm(user=request.user, data=request.POST)
-        if form.is_valid():
-            form.save()
-            
-            # Update user's password changed timestamp
-            request.user.password_changed_at = timezone.now()
-            request.user.save(update_fields=['password_changed_at'])
-            
-            # Log the user out and redirect to login
-            from django.contrib.auth import logout
-            logout(request)
-            
-            messages.success(request, "Password changed successfully. Please login with your new password.")
-            return redirect('login')
-        else:
-            return self.render_to_response({'form': form})
 
 # ==================== ADMIN ACTIONS ====================
 

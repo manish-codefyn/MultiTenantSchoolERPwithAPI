@@ -517,6 +517,12 @@ class TenantConfiguration(UUIDModel, TimeStampedModel):
         blank=True,
         verbose_name='Organization Logo'
     )
+    square_logo = models.ImageField(
+        upload_to='tenant_logos/',
+        null=True,
+        blank=True,
+        verbose_name='Organization Square Logo'
+    )
     
     primary_color = models.CharField(
         max_length=7,

@@ -32,12 +32,12 @@ urlpatterns = [
     # Tenants + Public
     path("", include("apps.tenants.urls", namespace="tenants")),
     path("", include("apps.public.urls")),
-
     # Master Dashboard
     path("dashboard/",core_views.MasterDashboardView.as_view(),name="master_dashboard",),
 
     # API URLs (Single Import)
-    path("", include("api_urls")),
+    path("", include("config.api_urls")),
+    
 ]
 
 if settings.DEBUG:

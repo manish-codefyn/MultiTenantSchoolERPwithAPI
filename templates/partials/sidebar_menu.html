@@ -17,13 +17,14 @@
     </li>
     {% include 'tenants/partials/sub_menu.html' %}
     {% include 'security/partials/sub_menu.html' %}
-    {% include 'users/partials/sub_menu.html' %}
+   
     {% endif %}
     {% endif %}
 
 
     {% if not is_public_tenant %}
     {% if request.user.is_staff %}
+    {% include 'users/partials/sub_menu.html' %}
     {% include 'admission/partials/sub_menu.html' %}
     {% include 'students/partials/sub_menu.html' %}
     {% include 'academics/partials/sub_menu.html' %}

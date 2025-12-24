@@ -85,6 +85,7 @@ def tenant_context(request):
             'primary_color': config.primary_color,
             'secondary_color': config.secondary_color,
             'theme_color': config.primary_color,
+            'square_logo': config.square_logo,
             
             # Academic settings
             'academic_year': config.academic_year,

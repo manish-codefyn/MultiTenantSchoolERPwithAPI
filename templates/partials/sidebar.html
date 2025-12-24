@@ -8,8 +8,9 @@
         <div class="sidebar-header">
             <!-- Logo Section -->
             <div>
-                {% if tenant_logo %}
-                    <img src="{{ tenant_logo.url }}" class="logo-icon user-img" alt="{{ tenant_name }}">
+             
+                {% if square_logo %}
+                    <img src="{{ square_logo.url }}" class="logo-icon user-img" alt="{{ tenant_name }}">
                 {% else %}
                     <img src="{% static 'images/logo_sq.svg' %}" class="logo-icon" alt="Default Logo">
                 {% endif %}

@@ -862,6 +862,7 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     @transaction.atomic
     def form_valid(self, form):
         """Successful profile update"""
+        
         user = form.save()
         
         # Log profile update
@@ -874,6 +875,17 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         )
         
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """Handle invalid form submission"""
+        # Convert errors to string for display
+        error_msg = str(form.errors)
+        messages.error(
+            self.request,
+            f"Please correct the errors below: {error_msg}",
+            extra_tags='alert-danger'
+        )
+        return super().form_invalid(form)
     
     def get_security_events(self, user):
         """Get recent security events for the user"""

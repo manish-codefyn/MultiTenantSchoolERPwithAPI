@@ -27,7 +27,10 @@
                         <div class="card-body p-sm-5">
                             <div class="">
                                 <div class="mb-3 text-center">
-                                    <img src="{{ tenant_logo }}" width="60" alt="Logo">
+                                     {% if tenant_logo %}
+                                      <img src="{{ tenant_logo.url }}" width="32" height="32" alt="{{ tenant_name }}" class="rounded-circle">
+                                      {% endif %}
+                                     <span class="ms-2 fw-bold text-dark d-none d-sm-inline">{{ tenant_name }}</span>
                                 </div>
                                 <div class="text-center mb-4">
                                     <h5 class="auth-title">Login</h5>
@@ -105,12 +108,12 @@
                                     </form>
                                 </div>
                                 
-                                <div class="login-separater text-center mb-5">
+                                <!-- <div class="login-separater text-center mb-5">
                                     <span>OR SIGN IN WITH</span>
                                     <hr>
-                                </div>
+                                </div> -->
                                 
-                                <div class="list-inline contacts-social text-center">
+                                <!-- <div class="list-inline contacts-social text-center">
                                     <a href="javascript:;" class="list-inline-item bg-facebook text-white border-0 rounded-3">
                                         <i class="bx bxl-facebook"></i>
                                     </a>
@@ -123,7 +126,7 @@
                                     <a href="javascript:;" class="list-inline-item bg-linkedin text-white border-0 rounded-3">
                                         <i class="bx bxl-linkedin"></i>
                                     </a>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

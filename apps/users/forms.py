@@ -320,19 +320,24 @@ class TenantAwareUserChangeForm(UserChangeForm,TenantAwareModelForm):
     
     class Meta:
         model = User
+        exclude = (
+            'timezone',
+            'language',  
+            'student_id',
+            'employee_id',
+            'tenant',
+        )
         fields = (
             'email',
             'first_name',
             'last_name',
-            # 'tenant',
+           
             'role',
             'phone_number',
             'date_of_birth',
             'avatar',
-            # 'timezone',
-            # 'language',
-            'student_id',
-            'employee_id',
+
+          
             'is_active',
             'is_verified',
             'mfa_enabled',
@@ -352,8 +357,8 @@ class TenantAwareUserChangeForm(UserChangeForm,TenantAwareModelForm):
                 'type': 'date'
             }),
             'avatar': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            'timezone': forms.Select(attrs={'class': 'form-control'}),
-            'language': forms.Select(attrs={'class': 'form-control'}),
+            'timezone': forms.TextInput(attrs={'class': 'form-control'}),
+            'language': forms.TextInput(attrs={'class': 'form-control'}),
             'student_id': forms.TextInput(attrs={'class': 'form-control'}),
             'employee_id': forms.TextInput(attrs={'class': 'form-control'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
@@ -453,69 +458,10 @@ class TenantAwareUserChangeForm(UserChangeForm,TenantAwareModelForm):
         return cleaned_data
 
 
-class TenantAwarePasswordChangeForm(PasswordChangeForm):
-    """Custom password change form"""
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        
-        # Add Bootstrap classes
-        for field_name in self.fields:
-            self.fields[field_name].widget.attrs.update({
-                'class': 'form-control',
-                'autocomplete': 'new-password'
-            })
-    
-    def clean_new_password2(self):
-        """Validate password strength"""
-        password1 = self.cleaned_data.get('new_password1')
-        password2 = self.cleaned_data.get('new_password2')
-        
-        if password1 and password2 and password1 != password2:
-            raise ValidationError(_("Passwords do not match."))
-        
-        if password1 and len(password1) < 8:
-            raise ValidationError(_("Password must be at least 8 characters long."))
-        
-        # Add more password strength checks as needed
-        # if not any(char.isdigit() for char in password1):
-        #     raise ValidationError(_("Password must contain at least one digit."))
-        
-        return password2
 
 
-class UserProfileForm(forms.ModelForm):
-    """Form for users to edit their own profile"""
-    
-    class Meta:
-        model = User
-        fields = (
-            'first_name',
-            'last_name',
-            'phone_number',
-            'date_of_birth',
-            'avatar',
-            # 'timezone',
-            # 'language',
-        )
-        widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'date_of_birth': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
-            }),
-            'avatar': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            # 'timezone': forms.Select(attrs={'class': 'form-control'}),
-            # 'language': forms.Select(attrs={'class': 'form-control'}),
-        }
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Make fields required for profile completion
-        self.fields['first_name'].required = True
-        self.fields['last_name'].required = True
+
+
 
 
 class BulkUserImportForm(forms.Form):
