@@ -4,6 +4,12 @@ import '../../features/dashboard/dashboard_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/tenant/presentation/tenant_selection_screen.dart';
 import '../../features/students/presentation/student_list_screen.dart';
+import '../../features/academics/presentation/academics_screen.dart';
+import '../../features/hr/presentation/staff_list_screen.dart';
+import '../../features/finance/presentation/fee_list_screen.dart';
+import '../../features/attendance/presentation/attendance_screen.dart';
+import '../../features/transport/presentation/transport_screen.dart';
+import '../../features/hostel/presentation/hostel_screen.dart';
 
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -22,9 +28,34 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/',
         builder: (context, state) => const DashboardScreen(),
       ),
+
       GoRoute(
         path: '/students',
         builder: (context, state) => const StudentListScreen(),
+      ),
+      GoRoute(
+        path: '/academics',
+        builder: (context, state) => const AcademicsScreen(),
+      ),
+      GoRoute(
+        path: '/hr/staff',
+        builder: (context, state) => const StaffListScreen(),
+      ),
+      GoRoute(
+        path: '/finance/fees',
+        builder: (context, state) => const FeeListScreen(),
+      ),
+      GoRoute(
+        path: '/attendance',
+        builder: (context, state) => const AttendanceScreen(),
+      ),
+      GoRoute(
+        path: '/transport',
+        builder: (context, state) => const TransportScreen(),
+      ),
+      GoRoute(
+        path: '/hostel',
+        builder: (context, state) => const HostelScreen(),
       ),
     ],
   );

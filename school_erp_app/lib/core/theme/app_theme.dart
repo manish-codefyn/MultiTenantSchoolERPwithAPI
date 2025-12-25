@@ -6,13 +6,18 @@ class AppTheme {
   static final lightTheme = ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF6750A4), // Modern purple seed
+      seedColor: const Color(0xFF6366F1), // Web Template Indigo
       brightness: Brightness.light,
     ),
-    textTheme: GoogleFonts.interTextTheme(),
+    fontFamily: GoogleFonts.roboto().fontFamily,
+    textTheme: GoogleFonts.robotoTextTheme(),
     appBarTheme: const AppBarTheme(
       centerTitle: true,
       elevation: 0,
+    ),
+    cardTheme: CardThemeData(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
@@ -25,10 +30,9 @@ class AppTheme {
   static final darkTheme = ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF6750A4),
+      seedColor: const Color(0xFF6366F1),
       brightness: Brightness.dark,
     ),
-    textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),

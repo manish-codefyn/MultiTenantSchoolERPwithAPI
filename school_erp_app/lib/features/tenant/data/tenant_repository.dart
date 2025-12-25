@@ -22,16 +22,17 @@ class TenantRepository {
       // But based on user request: http://dpskolkata.localhost:8000/
       // We will construct the URL and verify connectivity.
       
-      final tenantUrl = 'http://$schemaName.localhost:8000/api/v1/';
+      final response = await _publicDio.get(
+        'api/v1/public/lookup/', 
+        queryParameters: {'schema': schemaName},
+      );
       
-      // We can also verify validity via the public API first
-      // await _publicDio.get('institutions/$schemaName/');
-
-      // For this environment, let's just construct the URL and save it.
-      // In a real app, we would ping it to ensure it's alive.
+      final data = response.data;
+      final tenantUrl = data['api_url'];
+      final schema = data['schema_name'];
       
       await _storage.write(key: 'tenant_url', value: tenantUrl);
-      await _storage.write(key: 'tenant_schema', value: schemaName);
+      await _storage.write(key: 'tenant_schema', value: schema);
       
       return tenantUrl;
     } catch (e) {

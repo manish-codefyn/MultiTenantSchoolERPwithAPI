@@ -28,8 +28,25 @@ class DashboardScreen extends ConsumerWidget {
             case 0:
               context.pop(); // Close drawer
               break;
-            case 1:
               context.push('/students');
+              break;
+            case 2:
+              context.push('/academics');
+              break;
+            case 3:
+              context.push('/hr/staff');
+              break;
+            case 5: // Finance is at index 5 in the list below
+              context.push('/finance/fees');
+              break;
+            case 4: 
+              context.push('/attendance');
+              break;
+            case 6: 
+              context.push('/transport');
+              break;
+            case 7: 
+              context.push('/hostel');
               break;
             // Add other cases for more modules
           }
@@ -48,6 +65,10 @@ class DashboardScreen extends ConsumerWidget {
             label: Text('Academics'),
           ),
           NavigationDrawerDestination(
+            icon: Icon(Icons.people),
+            label: Text('Staff'),
+          ),
+          NavigationDrawerDestination(
             icon: Icon(Icons.class_),
             label: Text('Classes'),
           ),
@@ -62,6 +83,14 @@ class DashboardScreen extends ConsumerWidget {
           NavigationDrawerDestination(
             icon: Icon(Icons.library_books),
             label: Text('Library'),
+          ),
+          NavigationDrawerDestination(
+            icon: Icon(Icons.directions_bus),
+            label: Text('Transport'),
+          ),
+          NavigationDrawerDestination(
+            icon: Icon(Icons.bed),
+            label: Text('Hostel'),
           ),
         ],
       ),

@@ -24,7 +24,7 @@ class AuthRepository {
 
       final data = response.data;
       final tokens = data['tokens'];
-      await _storage.write(key: 'auth_token', value: tokens['access']);
+      await _storage.write(key: 'access_token', value: tokens['access']);
       await _storage.write(key: 'refresh_token', value: tokens['refresh']);
       
       return data['user'];
@@ -43,7 +43,7 @@ class AuthRepository {
     try {
       await dio.post('auth/api-logout/');
     } catch (_) {}
-    await _storage.delete(key: 'auth_token');
+    await _storage.delete(key: 'access_token');
     await _storage.delete(key: 'refresh_token');
   }
 

@@ -34,6 +34,22 @@ class ApiClient {
         return handler.next(options);
       },
     ));
+
+    // Initialize base URL from storage
+    _initBaseUrl();
+  }
+
+  void _initBaseUrl() async {
+    final url = await _storage.read(key: 'tenant_url');
+    if (url != null) {
+      _dio.options.baseUrl = url;
+      print('ApiClient: Restored Base URL to $url');
+    }
+  }
+
+  void setBaseUrl(String url) {
+    _dio.options.baseUrl = url;
+    print('ApiClient: Updated Base URL to $url');
   }
 
   Dio get client => _dio;
