@@ -4,21 +4,33 @@ part 'student.g.dart';
 
 @JsonSerializable()
 class Student {
-  final int id;
+  final String? id; // Made nullable for creation where ID doesn't exist yet
   @JsonKey(name: 'first_name')
   final String firstName;
   @JsonKey(name: 'last_name')
   final String lastName;
   @JsonKey(name: 'admission_number')
-  final String admissionNumber;
+  final String? admissionNumber; // Can be null if auto-generated
+  @JsonKey(name: 'personal_email')
   final String? email;
+  @JsonKey(name: 'mobile_primary')
+  final String? mobilePrimary;
+  final String? gender;
+  @JsonKey(name: 'date_of_birth')
+  final String? dateOfBirth;
+  @JsonKey(name: 'academic_year')
+  final String? academicYear;
 
   Student({
-    required this.id,
+    this.id,
     required this.firstName,
     required this.lastName,
-    required this.admissionNumber,
+    this.admissionNumber,
     this.email,
+    this.mobilePrimary,
+    this.gender,
+    this.dateOfBirth,
+    this.academicYear,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) => _$StudentFromJson(json);

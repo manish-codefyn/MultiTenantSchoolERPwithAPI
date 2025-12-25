@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../shared/widgets/app_card.dart';
+import '../../../../shared/widgets/app_data_table.dart';
+import '../../../../core/services/export_service.dart';
+import '../data/models/staff.dart';
 import 'controllers/hr_controller.dart';
 
 class StaffListScreen extends ConsumerWidget {
@@ -20,57 +22,53 @@ class StaffListScreen extends ConsumerWidget {
           if (staffList.isEmpty) {
             return const Center(child: Text('No staff members found'));
           }
-          return ListView.separated(
+          if (staffList.isEmpty) {
+            return const Center(child: Text('No staff members found'));
+          }
+           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
-            itemCount: staffList.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final staff = staffList[index];
-              return AppCard(
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 24,
-                      backgroundColor: Theme.of(context).primaryColorLight,
-                      child: Text(
-                        staff.firstName.isNotEmpty ? staff.firstName[0] : '?',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            staff.fullName,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            staff.designationTitle ?? 'Staff',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          if (staff.departmentName != null)
-                            Text(
-                              staff.departmentName!,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    const Icon(Icons.chevron_right, color: Colors.grey),
-                  ],
+            child: Column(
+              children: [
+                AppDataTable<Staff>(
+                  title: 'Staff Directory',
+                  onAdd: () {},
+                  onExport: (type) async {
+                     final headers = ['ID', 'Name', 'Designation', 'Department', 'Email'];
+                     final data = staffList.map((s) => [s.employeeId, s.fullName, s.designationTitle ?? '', s.departmentName ?? '', s.email]).toList();
+                     
+                     if (type == 'PDF') {
+                       await ExportService.exportToPdf(context, 'Staff List', headers, data);
+                     } else if (type == 'CSV' || type == 'Excel') {
+                       await ExportService.exportToCsv(context, 'staff_list', headers, data);
+                     }
+                  },
+                  columns: const ['Name', 'Designation', 'Department', 'Actions'],
+                  data: staffList,
+                  buildRow: (Staff staff) {
+                    return [
+                       DataCell(Text(staff.fullName)),
+                       DataCell(Text(staff.designationTitle ?? '-')),
+                       DataCell(Text(staff.departmentName ?? '-')),
+                       DataCell(Row(
+                         mainAxisSize: MainAxisSize.min,
+                         children: [
+                           IconButton(
+                             icon: const Icon(Icons.edit, color: Colors.blue),
+                             onPressed: () {},
+                             tooltip: 'Edit',
+                           ),
+                           IconButton(
+                             icon: const Icon(Icons.delete, color: Colors.red),
+                             onPressed: () {},
+                             tooltip: 'Delete',
+                           ),
+                         ],
+                       )),
+                    ];
+                  },
                 ),
-              );
-            },
+              ],
+            ),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),

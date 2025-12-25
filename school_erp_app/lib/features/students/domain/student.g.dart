@@ -7,11 +7,15 @@ part of 'student.dart';
 // **************************************************************************
 
 Student _$StudentFromJson(Map<String, dynamic> json) => Student(
-  id: (json['id'] as num).toInt(),
+  id: json['id'] as String?,
   firstName: json['first_name'] as String,
   lastName: json['last_name'] as String,
-  admissionNumber: json['admission_number'] as String,
-  email: json['email'] as String?,
+  admissionNumber: json['admission_number'] as String?,
+  email: json['personal_email'] as String?,
+  mobilePrimary: json['mobile_primary'] as String?,
+  gender: json['gender'] as String?,
+  dateOfBirth: json['date_of_birth'] as String?,
+  academicYear: json['academic_year'] as String?,
 );
 
 Map<String, dynamic> _$StudentToJson(Student instance) => <String, dynamic>{
@@ -19,5 +23,9 @@ Map<String, dynamic> _$StudentToJson(Student instance) => <String, dynamic>{
   'first_name': instance.firstName,
   'last_name': instance.lastName,
   'admission_number': instance.admissionNumber,
-  'email': instance.email,
+  'personal_email': instance.email,
+  'mobile_primary': instance.mobilePrimary,
+  'gender': instance.gender,
+  'date_of_birth': instance.dateOfBirth,
+  'academic_year': instance.academicYear,
 };
