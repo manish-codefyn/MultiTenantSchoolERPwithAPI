@@ -1,67 +1,88 @@
-from rest_framework import viewsets
-from apps.core.api.permissions import TenantAccessPermission, RoleRequiredPermission
-from rest_framework.permissions import IsAuthenticated
-from apps.core.permissions.mixins import TenantAccessMixin
-from apps.communications.models import *
-from .serializers import *
+from rest_framework import status
+from rest_framework.response import Response
+from apps.core.api.views import (
+    BaseListCreateAPIView, BaseRetrieveUpdateDestroyAPIView
+)
+from apps.communications.models import (
+    CommunicationChannel, CommunicationTemplate, CommunicationCampaign,
+    Communication, CommunicationAttachment
+)
+from apps.communications.api.serializers import (
+    CommunicationChannelSerializer, CommunicationTemplateSerializer,
+    CommunicationCampaignSerializer, CommunicationSerializer,
+    CommunicationAttachmentSerializer
+)
 
-class CommunicationChannelViewSet(viewsets.ModelViewSet):
-    queryset = CommunicationChannel.objects.all()
+# ============================================================================
+# CONFIG VIEWS
+# ============================================================================
+
+class CommunicationChannelListCreateAPIView(BaseListCreateAPIView):
+    model = CommunicationChannel
     serializer_class = CommunicationChannelSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['name', 'code']
+    filterset_fields = ['channel_type', 'is_active', 'is_healthy']
+    roles_required = ['admin', 'communications_manager']
 
-class CommunicationTemplateViewSet(viewsets.ModelViewSet):
-    queryset = CommunicationTemplate.objects.all()
+class CommunicationChannelDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = CommunicationChannel
+    serializer_class = CommunicationChannelSerializer
+    roles_required = ['admin', 'communications_manager']
+
+
+class CommunicationTemplateListCreateAPIView(BaseListCreateAPIView):
+    model = CommunicationTemplate
     serializer_class = CommunicationTemplateSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['name', 'code', 'subject']
+    filterset_fields = ['channel', 'template_type', 'language', 'is_active', 'is_approved']
+    roles_required = ['admin', 'communications_manager', 'teacher']
 
-class CommunicationCampaignViewSet(viewsets.ModelViewSet):
-    queryset = CommunicationCampaign.objects.all()
+class CommunicationTemplateDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = CommunicationTemplate
+    serializer_class = CommunicationTemplateSerializer
+    roles_required = ['admin', 'communications_manager']
+
+# ============================================================================
+# CAMPAIGN VIEWS
+# ============================================================================
+
+class CommunicationCampaignListCreateAPIView(BaseListCreateAPIView):
+    model = CommunicationCampaign
     serializer_class = CommunicationCampaignSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['name']
+    filterset_fields = ['campaign_type', 'status', 'template']
+    roles_required = ['admin', 'communications_manager']
 
-class CommunicationViewSet(viewsets.ModelViewSet):
-    queryset = Communication.objects.all()
+class CommunicationCampaignDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = CommunicationCampaign
+    serializer_class = CommunicationCampaignSerializer
+    roles_required = ['admin', 'communications_manager']
+
+# ============================================================================
+# COMMUNICATION VIEWS
+# ============================================================================
+
+class CommunicationListCreateAPIView(BaseListCreateAPIView):
+    model = Communication
     serializer_class = CommunicationSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['title', 'subject', 'external_recipient_email']
+    filterset_fields = ['channel', 'template', 'campaign', 'status', 'direction', 'priority']
+    roles_required = ['admin', 'communications_manager', 'teacher']
 
-class CommunicationAttachmentViewSet(viewsets.ModelViewSet):
-    queryset = CommunicationAttachment.objects.all()
+class CommunicationDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Communication
+    serializer_class = CommunicationSerializer
+    roles_required = ['admin', 'communications_manager']
+
+
+class CommunicationAttachmentListCreateAPIView(BaseListCreateAPIView):
+    model = CommunicationAttachment
     serializer_class = CommunicationAttachmentSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['file_name']
+    filterset_fields = ['communication', 'file_type']
+    roles_required = ['admin', 'communications_manager']
 
-class NotificationViewSet(viewsets.ModelViewSet):
-    queryset = Notification.objects.all()
-    serializer_class = NotificationSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-
-class MessageThreadViewSet(viewsets.ModelViewSet):
-    queryset = MessageThread.objects.all()
-    serializer_class = MessageThreadSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-
-class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-
-class MessageRecipientViewSet(viewsets.ModelViewSet):
-    queryset = MessageRecipient.objects.all()
-    serializer_class = MessageRecipientSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-
-class SystemMessageViewSet(viewsets.ModelViewSet):
-    queryset = SystemMessage.objects.all()
-    serializer_class = SystemMessageSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-
-class CommunicationPreferenceViewSet(viewsets.ModelViewSet):
-    queryset = CommunicationPreference.objects.all()
-    serializer_class = CommunicationPreferenceSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-
-class CommunicationAnalyticsViewSet(viewsets.ModelViewSet):
-    queryset = CommunicationAnalytics.objects.all()
-    serializer_class = CommunicationAnalyticsSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-
+class CommunicationAttachmentDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = CommunicationAttachment
+    serializer_class = CommunicationAttachmentSerializer
+    roles_required = ['admin', 'communications_manager']

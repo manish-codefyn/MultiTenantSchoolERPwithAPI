@@ -14,7 +14,7 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 
 # Import models
-from .models import Student, Guardian, StudentAddress, StudentDocument, StudentAcademicHistory
+from ..models import Student, Guardian, StudentAddress, StudentDocument, StudentAcademicHistory
 from apps.academics.models import AcademicYear, SchoolClass, Section, Stream
 from apps.core.services.audit_service import AuditService
 from apps.core.services.notification_service import NotificationService
@@ -204,7 +204,7 @@ class StudentService:
         errors = []
         
         try:
-            from .forms import StudentForm
+            from ..forms import StudentForm
             
             # Prepare form data
             form_data = data.copy()
@@ -784,7 +784,7 @@ class GuardianService:
         errors = []
         
         try:
-            from .forms import GuardianForm
+            from ..forms import GuardianForm
             
             # Prepare form data
             form_data = data.copy()

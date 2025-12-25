@@ -1,21 +1,30 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from . import views
-
-router = DefaultRouter()
-router.register(r'communicationchannels', views.CommunicationChannelViewSet)
-router.register(r'communicationtemplates', views.CommunicationTemplateViewSet)
-router.register(r'communicationcampaigns', views.CommunicationCampaignViewSet)
-router.register(r'communications', views.CommunicationViewSet)
-router.register(r'communicationattachments', views.CommunicationAttachmentViewSet)
-router.register(r'notifications', views.NotificationViewSet)
-router.register(r'messagethreads', views.MessageThreadViewSet)
-router.register(r'messages', views.MessageViewSet)
-router.register(r'messagerecipients', views.MessageRecipientViewSet)
-router.register(r'systemmessages', views.SystemMessageViewSet)
-router.register(r'communicationpreferences', views.CommunicationPreferenceViewSet)
-router.register(r'communicationanalyticss', views.CommunicationAnalyticsViewSet)
+from django.urls import path
+from apps.communications.api.views import (
+    CommunicationChannelListCreateAPIView, CommunicationChannelDetailAPIView,
+    CommunicationTemplateListCreateAPIView, CommunicationTemplateDetailAPIView,
+    CommunicationCampaignListCreateAPIView, CommunicationCampaignDetailAPIView,
+    CommunicationListCreateAPIView, CommunicationDetailAPIView,
+    CommunicationAttachmentListCreateAPIView, CommunicationAttachmentDetailAPIView
+)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    # Channels
+    path('channels/', CommunicationChannelListCreateAPIView.as_view(), name='communicationchannel-list'),
+    path('channels/<uuid:pk>/', CommunicationChannelDetailAPIView.as_view(), name='communicationchannel-detail'),
+
+    # Templates
+    path('templates/', CommunicationTemplateListCreateAPIView.as_view(), name='communicationtemplate-list'),
+    path('templates/<uuid:pk>/', CommunicationTemplateDetailAPIView.as_view(), name='communicationtemplate-detail'),
+
+    # Campaigns
+    path('campaigns/', CommunicationCampaignListCreateAPIView.as_view(), name='communicationcampaign-list'),
+    path('campaigns/<uuid:pk>/', CommunicationCampaignDetailAPIView.as_view(), name='communicationcampaign-detail'),
+
+    # Communications
+    path('', CommunicationListCreateAPIView.as_view(), name='communication-list'),
+    path('<uuid:pk>/', CommunicationDetailAPIView.as_view(), name='communication-detail'),
+
+    # Attachments
+    path('attachments/', CommunicationAttachmentListCreateAPIView.as_view(), name='communicationattachment-list'),
+    path('attachments/<uuid:pk>/', CommunicationAttachmentDetailAPIView.as_view(), name='communicationattachment-detail'),
 ]

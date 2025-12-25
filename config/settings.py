@@ -11,7 +11,7 @@ import environ
 
 APP_VERSION = "1.0.0"
 API_VERSION = "v1"
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -53,6 +53,7 @@ SHARED_APPS = [
     "apps.users",  # User model must be shared to be AUTH_USER_MODEL
     "apps.auth",
     "apps.security",
+    "apps.public",
 ]
 
 TENANT_APPS = [
@@ -102,6 +103,7 @@ TENANT_MODEL = "tenants.Tenant"
 TENANT_DOMAIN_MODEL = "tenants.Domain"
 BASE_DOMAIN = "localhost"
 PUBLIC_SCHEMA_NAME = "public"
+SHOW_PUBLIC_IF_NO_TENANT_FOUND = True
 
 # Public schemas that don't require tenant context
 PUBLIC_SCHEMAS = ["public"]
@@ -138,6 +140,15 @@ MIDDLEWARE = [
     "apps.core.middleware.tenant.TenantContextMiddleware",
     # 'apps.core.middleware.security.SecurityHeadersMiddleware',
     "apps.core.middleware.audit_middleware.SafeAuditMiddleware",
+]
+
+# CORS Configuration
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+from corsheaders.defaults import default_headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "x-tenant-id",
 ]
 
 
@@ -263,6 +274,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
     ],
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",

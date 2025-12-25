@@ -90,9 +90,9 @@ class StudentIDCardGenerator:
             
             for name, path in font_paths.items():
                 if not os.path.exists(path):
-                    print(f"❌ Font file not found: {path}")
+                    print(f"[X] Font file not found: {path}")
                 else:
-                    print(f"✅ Font file found: {path}")
+                    print(f"[OK] Font file found: {path}")
             
             self.font_org_name = ImageFont.truetype(font_paths['org_name'], 24)
             self.font_bold = ImageFont.truetype(font_paths['bold'], 38)
@@ -103,7 +103,7 @@ class StudentIDCardGenerator:
             self.font_icon_large = ImageFont.truetype(font_paths['icon'], 60)
 
         except IOError as e:
-            print(f"⚠️ Font loading failed: {e}. Falling back to system fonts.")
+            print(f"[WARNING] Font loading failed: {e}. Falling back to system fonts.")
             # Fallback to default fonts
             self._set_default_fonts()
 

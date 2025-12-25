@@ -1,163 +1,308 @@
-from rest_framework import viewsets
-from apps.core.api.permissions import TenantAccessPermission, RoleRequiredPermission
-from rest_framework.permissions import IsAuthenticated
-from apps.core.permissions.mixins import TenantAccessMixin
-from apps.hr.models import *
-from .serializers import *
+from rest_framework import status
+from apps.core.api.views import (
+    BaseListCreateAPIView, BaseRetrieveUpdateDestroyAPIView
+)
+from apps.hr.models import (
+    Department, Qualification, Designation, Staff, StaffAddress, StaffDocument,
+    StaffAttendance, LeaveType, LeaveApplication, LeaveBalance, SalaryStructure,
+    Payroll, Promotion, EmploymentHistory, TrainingProgram, TrainingParticipation,
+    PerformanceReview, Recruitment, JobApplication, Holiday, WorkSchedule,
+    TaxConfig, PFESIConfig, DisciplinaryAction, Asset, AssetAssignment
+)
+from .serializers import (
+    DepartmentSerializer, QualificationSerializer, DesignationSerializer,
+    StaffSerializer, StaffAddressSerializer, StaffDocumentSerializer,
+    StaffAttendanceSerializer, LeaveTypeSerializer, LeaveApplicationSerializer,
+    LeaveBalanceSerializer, SalaryStructureSerializer, PayrollSerializer,
+    PromotionSerializer, EmploymentHistorySerializer, TrainingProgramSerializer,
+    TrainingParticipationSerializer, PerformanceReviewSerializer,
+    RecruitmentSerializer, JobApplicationSerializer, HolidaySerializer,
+    WorkScheduleSerializer, TaxConfigSerializer, PFESIConfigSerializer,
+    DisciplinaryActionSerializer, AssetSerializer, AssetAssignmentSerializer
+)
 
-class DepartmentViewSet(viewsets.ModelViewSet):
-    queryset = Department.objects.all()
+# Department
+class DepartmentListCreateAPIView(BaseListCreateAPIView):
+    model = Department
     serializer_class = DepartmentSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class QualificationViewSet(viewsets.ModelViewSet):
-    queryset = Qualification.objects.all()
+class DepartmentDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Department
+    serializer_class = DepartmentSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# Qualification
+class QualificationListCreateAPIView(BaseListCreateAPIView):
+    model = Qualification
     serializer_class = QualificationSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class DesignationViewSet(viewsets.ModelViewSet):
-    queryset = Designation.objects.all()
+class QualificationDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Qualification
+    serializer_class = QualificationSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# Designation
+class DesignationListCreateAPIView(BaseListCreateAPIView):
+    model = Designation
     serializer_class = DesignationSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class StaffViewSet(viewsets.ModelViewSet):
-    queryset = Staff.objects.all()
+class DesignationDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Designation
+    serializer_class = DesignationSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# Staff
+class StaffListCreateAPIView(BaseListCreateAPIView):
+    model = Staff
     serializer_class = StaffSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class StaffAddressViewSet(viewsets.ModelViewSet):
-    queryset = StaffAddress.objects.all()
+class StaffDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Staff
+    serializer_class = StaffSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# StaffAddress
+class StaffAddressListCreateAPIView(BaseListCreateAPIView):
+    model = StaffAddress
     serializer_class = StaffAddressSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class StaffDocumentViewSet(viewsets.ModelViewSet):
-    queryset = StaffDocument.objects.all()
+class StaffAddressDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = StaffAddress
+    serializer_class = StaffAddressSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# StaffDocument
+class StaffDocumentListCreateAPIView(BaseListCreateAPIView):
+    model = StaffDocument
     serializer_class = StaffDocumentSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class StaffAttendanceViewSet(viewsets.ModelViewSet):
-    queryset = StaffAttendance.objects.all()
+class StaffDocumentDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = StaffDocument
+    serializer_class = StaffDocumentSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# StaffAttendance
+class StaffAttendanceListCreateAPIView(BaseListCreateAPIView):
+    model = StaffAttendance
     serializer_class = StaffAttendanceSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN', 'TEACHER', 'STAFF']
 
-class LeaveTypeViewSet(viewsets.ModelViewSet):
-    queryset = LeaveType.objects.all()
+class StaffAttendanceDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = StaffAttendance
+    serializer_class = StaffAttendanceSerializer
+    roles_required = ['HR', 'ADMIN', 'TEACHER', 'STAFF']
+
+# LeaveType
+class LeaveTypeListCreateAPIView(BaseListCreateAPIView):
+    model = LeaveType
     serializer_class = LeaveTypeSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class LeaveApplicationViewSet(viewsets.ModelViewSet):
-    queryset = LeaveApplication.objects.all()
+class LeaveTypeDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = LeaveType
+    serializer_class = LeaveTypeSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# LeaveApplication
+class LeaveApplicationListCreateAPIView(BaseListCreateAPIView):
+    model = LeaveApplication
     serializer_class = LeaveApplicationSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN', 'TEACHER', 'STAFF']
 
-class LeaveBalanceViewSet(viewsets.ModelViewSet):
-    queryset = LeaveBalance.objects.all()
+class LeaveApplicationDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = LeaveApplication
+    serializer_class = LeaveApplicationSerializer
+    roles_required = ['HR', 'ADMIN', 'TEACHER', 'STAFF']
+
+# LeaveBalance
+class LeaveBalanceListCreateAPIView(BaseListCreateAPIView):
+    model = LeaveBalance
     serializer_class = LeaveBalanceSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class SalaryStructureViewSet(viewsets.ModelViewSet):
-    queryset = SalaryStructure.objects.all()
+class LeaveBalanceDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = LeaveBalance
+    serializer_class = LeaveBalanceSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# SalaryStructure
+class SalaryStructureListCreateAPIView(BaseListCreateAPIView):
+    model = SalaryStructure
     serializer_class = SalaryStructureSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN', 'ACCOUNTANT']
 
-class PayrollViewSet(viewsets.ModelViewSet):
-    queryset = Payroll.objects.all()
+class SalaryStructureDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = SalaryStructure
+    serializer_class = SalaryStructureSerializer
+    roles_required = ['HR', 'ADMIN', 'ACCOUNTANT']
+
+# Payroll
+class PayrollListCreateAPIView(BaseListCreateAPIView):
+    model = Payroll
     serializer_class = PayrollSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN', 'ACCOUNTANT']
 
-class PromotionViewSet(viewsets.ModelViewSet):
-    queryset = Promotion.objects.all()
+class PayrollDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Payroll
+    serializer_class = PayrollSerializer
+    roles_required = ['HR', 'ADMIN', 'ACCOUNTANT']
+
+# Promotion
+class PromotionListCreateAPIView(BaseListCreateAPIView):
+    model = Promotion
     serializer_class = PromotionSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class EmploymentHistoryViewSet(viewsets.ModelViewSet):
-    queryset = EmploymentHistory.objects.all()
+class PromotionDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Promotion
+    serializer_class = PromotionSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# EmploymentHistory
+class EmploymentHistoryListCreateAPIView(BaseListCreateAPIView):
+    model = EmploymentHistory
     serializer_class = EmploymentHistorySerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class TrainingProgramViewSet(viewsets.ModelViewSet):
-    queryset = TrainingProgram.objects.all()
+class EmploymentHistoryDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = EmploymentHistory
+    serializer_class = EmploymentHistorySerializer
+    roles_required = ['HR', 'ADMIN']
+
+# TrainingProgram
+class TrainingProgramListCreateAPIView(BaseListCreateAPIView):
+    model = TrainingProgram
     serializer_class = TrainingProgramSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class TrainingParticipationViewSet(viewsets.ModelViewSet):
-    queryset = TrainingParticipation.objects.all()
+class TrainingProgramDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = TrainingProgram
+    serializer_class = TrainingProgramSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# TrainingParticipation
+class TrainingParticipationListCreateAPIView(BaseListCreateAPIView):
+    model = TrainingParticipation
     serializer_class = TrainingParticipationSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class PerformanceReviewViewSet(viewsets.ModelViewSet):
-    queryset = PerformanceReview.objects.all()
+class TrainingParticipationDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = TrainingParticipation
+    serializer_class = TrainingParticipationSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# PerformanceReview
+class PerformanceReviewListCreateAPIView(BaseListCreateAPIView):
+    model = PerformanceReview
     serializer_class = PerformanceReviewSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class RecruitmentViewSet(viewsets.ModelViewSet):
-    queryset = Recruitment.objects.all()
+class PerformanceReviewDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = PerformanceReview
+    serializer_class = PerformanceReviewSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# Recruitment
+class RecruitmentListCreateAPIView(BaseListCreateAPIView):
+    model = Recruitment
     serializer_class = RecruitmentSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class JobApplicationViewSet(viewsets.ModelViewSet):
-    queryset = JobApplication.objects.all()
+class RecruitmentDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Recruitment
+    serializer_class = RecruitmentSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# JobApplication
+class JobApplicationListCreateAPIView(BaseListCreateAPIView):
+    model = JobApplication
     serializer_class = JobApplicationSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class HolidayViewSet(viewsets.ModelViewSet):
-    queryset = Holiday.objects.all()
+class JobApplicationDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = JobApplication
+    serializer_class = JobApplicationSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# Holiday
+class HolidayListCreateAPIView(BaseListCreateAPIView):
+    model = Holiday
     serializer_class = HolidaySerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class WorkScheduleViewSet(viewsets.ModelViewSet):
-    queryset = WorkSchedule.objects.all()
+class HolidayDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Holiday
+    serializer_class = HolidaySerializer
+    roles_required = ['HR', 'ADMIN']
+
+# WorkSchedule
+class WorkScheduleListCreateAPIView(BaseListCreateAPIView):
+    model = WorkSchedule
     serializer_class = WorkScheduleSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class TaxConfigViewSet(viewsets.ModelViewSet):
-    queryset = TaxConfig.objects.all()
+class WorkScheduleDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = WorkSchedule
+    serializer_class = WorkScheduleSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# TaxConfig
+class TaxConfigListCreateAPIView(BaseListCreateAPIView):
+    model = TaxConfig
     serializer_class = TaxConfigSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN', 'ACCOUNTANT']
 
-class PFESIConfigViewSet(viewsets.ModelViewSet):
-    queryset = PFESIConfig.objects.all()
+class TaxConfigDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = TaxConfig
+    serializer_class = TaxConfigSerializer
+    roles_required = ['HR', 'ADMIN', 'ACCOUNTANT']
+
+# PFESIConfig
+class PFESIConfigListCreateAPIView(BaseListCreateAPIView):
+    model = PFESIConfig
     serializer_class = PFESIConfigSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN', 'ACCOUNTANT']
 
-class DisciplinaryActionViewSet(viewsets.ModelViewSet):
-    queryset = DisciplinaryAction.objects.all()
+class PFESIConfigDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = PFESIConfig
+    serializer_class = PFESIConfigSerializer
+    roles_required = ['HR', 'ADMIN', 'ACCOUNTANT']
+
+# DisciplinaryAction
+class DisciplinaryActionListCreateAPIView(BaseListCreateAPIView):
+    model = DisciplinaryAction
     serializer_class = DisciplinaryActionSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class AssetViewSet(viewsets.ModelViewSet):
-    queryset = Asset.objects.all()
+class DisciplinaryActionDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = DisciplinaryAction
+    serializer_class = DisciplinaryActionSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# Asset
+class AssetListCreateAPIView(BaseListCreateAPIView):
+    model = Asset
     serializer_class = AssetSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
-class AssetAssignmentViewSet(viewsets.ModelViewSet):
-    queryset = AssetAssignment.objects.all()
+class AssetDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Asset
+    serializer_class = AssetSerializer
+    roles_required = ['HR', 'ADMIN']
+
+# AssetAssignment
+class AssetAssignmentListCreateAPIView(BaseListCreateAPIView):
+    model = AssetAssignment
     serializer_class = AssetAssignmentSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['hr', 'admin']
+    roles_required = ['HR', 'ADMIN']
 
+class AssetAssignmentDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = AssetAssignment
+    serializer_class = AssetAssignmentSerializer
+    roles_required = ['HR', 'ADMIN']

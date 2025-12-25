@@ -9,5 +9,7 @@ router.register(r'securityevents', views.SecurityEventViewSet)
 router.register(r'loginattempts', views.LoginAttemptViewSet)
 
 urlpatterns = [
+    path('api-login/', views.CustomTokenObtainPairView.as_view(), name='api_login'),
+    path('api-logout/', views.APILogoutView.as_view(), name='api_logout'),
     path('', include(router.urls)),
 ]

@@ -1,109 +1,251 @@
-from rest_framework import viewsets
-from apps.core.api.permissions import TenantAccessPermission, RoleRequiredPermission
-from rest_framework.permissions import IsAuthenticated
-from apps.core.permissions.mixins import TenantAccessMixin
-from apps.academics.models import *
-from .serializers import *
+from rest_framework import status
+from apps.core.api.views import (
+    BaseListCreateAPIView, BaseRetrieveUpdateDestroyAPIView
+)
+from apps.academics.models import (
+    AcademicYear, Term, SchoolClass, Section, House, HousePoints,
+    Subject, ClassSubject, TimeTable, StudentAttendance, Holiday,
+    StudyMaterial, Syllabus, Stream, ClassTeacher, GradingSystem, Grade
+)
+from .serializers import (
+    AcademicYearSerializer, TermSerializer, SchoolClassSerializer,
+    SectionSerializer, HouseSerializer, HousePointsSerializer,
+    SubjectSerializer, ClassSubjectSerializer, TimeTableSerializer,
+    StudentAttendanceSerializer, HolidaySerializer, StudyMaterialSerializer,
+    SyllabusSerializer, StreamSerializer, ClassTeacherSerializer,
+    GradingSystemSerializer, GradeSerializer
+)
 
-class AcademicYearViewSet(viewsets.ModelViewSet):
-    queryset = AcademicYear.objects.all()
+# ============================================================================
+# ACADEMIC YEAR
+# ============================================================================
+
+class AcademicYearListCreateAPIView(BaseListCreateAPIView):
+    model = AcademicYear
     serializer_class = AcademicYearSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL']
 
-class TermViewSet(viewsets.ModelViewSet):
-    queryset = Term.objects.all()
+class AcademicYearDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = AcademicYear
+    serializer_class = AcademicYearSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
+
+# ============================================================================
+# TERM
+# ============================================================================
+
+class TermListCreateAPIView(BaseListCreateAPIView):
+    model = Term
     serializer_class = TermSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL']
 
-class SchoolClassViewSet(viewsets.ModelViewSet):
-    queryset = SchoolClass.objects.all()
+class TermDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Term
+    serializer_class = TermSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
+
+# ============================================================================
+# SCHOOL CLASS
+# ============================================================================
+
+class SchoolClassListCreateAPIView(BaseListCreateAPIView):
+    model = SchoolClass
     serializer_class = SchoolClassSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER']
 
-class SectionViewSet(viewsets.ModelViewSet):
-    queryset = Section.objects.all()
+class SchoolClassDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = SchoolClass
+    serializer_class = SchoolClassSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
+
+# ============================================================================
+# SECTION
+# ============================================================================
+
+class SectionListCreateAPIView(BaseListCreateAPIView):
+    model = Section
     serializer_class = SectionSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER']
 
-class HouseViewSet(viewsets.ModelViewSet):
-    queryset = House.objects.all()
-    serializer_class = HouseSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+class SectionDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Section
+    serializer_class = SectionSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
 
-class HousePointsViewSet(viewsets.ModelViewSet):
-    queryset = HousePoints.objects.all()
-    serializer_class = HousePointsSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+# ============================================================================
+# SUBJECT
+# ============================================================================
 
-class SubjectViewSet(viewsets.ModelViewSet):
-    queryset = Subject.objects.all()
+class SubjectListCreateAPIView(BaseListCreateAPIView):
+    model = Subject
     serializer_class = SubjectSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER']
 
-class ClassSubjectViewSet(viewsets.ModelViewSet):
-    queryset = ClassSubject.objects.all()
+class SubjectDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Subject
+    serializer_class = SubjectSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
+
+# ============================================================================
+# CLASS SUBJECT
+# ============================================================================
+
+class ClassSubjectListCreateAPIView(BaseListCreateAPIView):
+    model = ClassSubject
     serializer_class = ClassSubjectSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER']
 
-class TimeTableViewSet(viewsets.ModelViewSet):
-    queryset = TimeTable.objects.all()
+class ClassSubjectDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = ClassSubject
+    serializer_class = ClassSubjectSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
+
+# ============================================================================
+# TIME TABLE
+# ============================================================================
+
+class TimeTableListCreateAPIView(BaseListCreateAPIView):
+    model = TimeTable
     serializer_class = TimeTableSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER', 'STUDENT']
 
-class StudentAttendanceViewSet(viewsets.ModelViewSet):
-    queryset = StudentAttendance.objects.all()
+class TimeTableDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = TimeTable
+    serializer_class = TimeTableSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER']
+
+# ============================================================================
+# STUDENT ATTENDANCE
+# ============================================================================
+
+class StudentAttendanceListCreateAPIView(BaseListCreateAPIView):
+    model = StudentAttendance
     serializer_class = StudentAttendanceSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER', 'STUDENT']
 
-class HolidayViewSet(viewsets.ModelViewSet):
-    queryset = Holiday.objects.all()
+class StudentAttendanceDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = StudentAttendance
+    serializer_class = StudentAttendanceSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER']
+
+# ============================================================================
+# HOLIDAY
+# ============================================================================
+
+class HolidayListCreateAPIView(BaseListCreateAPIView):
+    model = Holiday
     serializer_class = HolidaySerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER', 'STUDENT']
 
-class StudyMaterialViewSet(viewsets.ModelViewSet):
-    queryset = StudyMaterial.objects.all()
+class HolidayDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Holiday
+    serializer_class = HolidaySerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
+
+# ============================================================================
+# STUDY MATERIAL
+# ============================================================================
+
+class StudyMaterialListCreateAPIView(BaseListCreateAPIView):
+    model = StudyMaterial
     serializer_class = StudyMaterialSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER', 'STUDENT']
 
-class SyllabusViewSet(viewsets.ModelViewSet):
-    queryset = Syllabus.objects.all()
+class StudyMaterialDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = StudyMaterial
+    serializer_class = StudyMaterialSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER']
+
+# ============================================================================
+# SYLLABUS
+# ============================================================================
+
+class SyllabusListCreateAPIView(BaseListCreateAPIView):
+    model = Syllabus
     serializer_class = SyllabusSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER', 'STUDENT']
 
-class StreamViewSet(viewsets.ModelViewSet):
-    queryset = Stream.objects.all()
+class SyllabusDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Syllabus
+    serializer_class = SyllabusSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER']
+
+# ============================================================================
+# STREAM
+# ============================================================================
+
+class StreamListCreateAPIView(BaseListCreateAPIView):
+    model = Stream
     serializer_class = StreamSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL']
 
-class ClassTeacherViewSet(viewsets.ModelViewSet):
-    queryset = ClassTeacher.objects.all()
+class StreamDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Stream
+    serializer_class = StreamSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
+
+# ============================================================================
+# CLASS TEACHER
+# ============================================================================
+
+class ClassTeacherListCreateAPIView(BaseListCreateAPIView):
+    model = ClassTeacher
     serializer_class = ClassTeacherSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL']
 
-class GradingSystemViewSet(viewsets.ModelViewSet):
-    queryset = GradingSystem.objects.all()
+class ClassTeacherDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = ClassTeacher
+    serializer_class = ClassTeacherSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
+
+# ============================================================================
+# GRADING SYSTEM
+# ============================================================================
+
+class GradingSystemListCreateAPIView(BaseListCreateAPIView):
+    model = GradingSystem
     serializer_class = GradingSystemSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL']
 
-class GradeViewSet(viewsets.ModelViewSet):
-    queryset = Grade.objects.all()
+class GradingSystemDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = GradingSystem
+    serializer_class = GradingSystemSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
+
+# ============================================================================
+# GRADE
+# ============================================================================
+
+class GradeListCreateAPIView(BaseListCreateAPIView):
+    model = Grade
     serializer_class = GradeSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    roles_required = ['ADMIN', 'PRINCIPAL']
 
+class GradeDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Grade
+    serializer_class = GradeSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
+
+# ============================================================================
+# HOUSE
+# ============================================================================
+
+class HouseListCreateAPIView(BaseListCreateAPIView):
+    model = House
+    serializer_class = HouseSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER']
+
+class HouseDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = House
+    serializer_class = HouseSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL']
+
+class HousePointsListCreateAPIView(BaseListCreateAPIView):
+    model = HousePoints
+    serializer_class = HousePointsSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER']
+
+class HousePointsDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = HousePoints
+    serializer_class = HousePointsSerializer
+    roles_required = ['ADMIN', 'PRINCIPAL', 'TEACHER']

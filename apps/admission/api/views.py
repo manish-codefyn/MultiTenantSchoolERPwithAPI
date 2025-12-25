@@ -1,67 +1,70 @@
-from rest_framework import viewsets
-from apps.core.api.permissions import TenantAccessPermission, RoleRequiredPermission
-from rest_framework.permissions import IsAuthenticated
-from apps.core.permissions.mixins import TenantAccessMixin
-from apps.admission.models import *
-from .serializers import *
+from rest_framework import status
+from rest_framework.response import Response
+from apps.core.api.views import (
+    BaseListCreateAPIView, BaseRetrieveUpdateDestroyAPIView
+)
+from apps.admission.models import (
+    AdmissionCycle, AdmissionProgram, OnlineApplication, ApplicationDocument
+)
+from apps.admission.api.serializers import (
+    AdmissionCycleSerializer, AdmissionProgramSerializer,
+    OnlineApplicationSerializer, ApplicationDocumentSerializer
+)
 
-class AdmissionCycleViewSet(viewsets.ModelViewSet):
-    queryset = AdmissionCycle.objects.all()
+# ============================================================================
+# CYCLE & PROGRAM VIEWS
+# ============================================================================
+
+class AdmissionCycleListCreateAPIView(BaseListCreateAPIView):
+    model = AdmissionCycle
     serializer_class = AdmissionCycleSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['admin', 'staff']
+    search_fields = ['name', 'code', 'academic_year__name']
+    filterset_fields = ['status', 'school_level', 'academic_year', 'is_active']
+    roles_required = ['admin', 'admissions_officer']
 
-class AdmissionProgramViewSet(viewsets.ModelViewSet):
-    queryset = AdmissionProgram.objects.all()
+class AdmissionCycleDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = AdmissionCycle
+    serializer_class = AdmissionCycleSerializer
+    roles_required = ['admin', 'admissions_officer']
+
+
+class AdmissionProgramListCreateAPIView(BaseListCreateAPIView):
+    model = AdmissionProgram
     serializer_class = AdmissionProgramSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['admin', 'staff']
+    search_fields = ['program_name', 'class_grade']
+    filterset_fields = ['admission_cycle', 'program_type', 'stream', 'is_active']
+    roles_required = ['admin', 'admissions_officer']
 
-class OnlineApplicationViewSet(viewsets.ModelViewSet):
-    queryset = OnlineApplication.objects.all()
+class AdmissionProgramDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = AdmissionProgram
+    serializer_class = AdmissionProgramSerializer
+    roles_required = ['admin', 'admissions_officer']
+
+# ============================================================================
+# APPLICATION VIEWS
+# ============================================================================
+
+class OnlineApplicationListCreateAPIView(BaseListCreateAPIView):
+    model = OnlineApplication
     serializer_class = OnlineApplicationSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['admin', 'staff']
+    search_fields = ['application_number', 'first_name', 'email', 'phone']
+    filterset_fields = ['admission_cycle', 'program', 'status', 'gender', 'category']
+    roles_required = ['admin', 'admissions_officer', 'parent']
 
-class ApplicationDocumentViewSet(viewsets.ModelViewSet):
-    queryset = ApplicationDocument.objects.all()
+class OnlineApplicationDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = OnlineApplication
+    serializer_class = OnlineApplicationSerializer
+    roles_required = ['admin', 'admissions_officer', 'parent']
+
+
+class ApplicationDocumentListCreateAPIView(BaseListCreateAPIView):
+    model = ApplicationDocument
     serializer_class = ApplicationDocumentSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['admin', 'staff']
+    search_fields = ['file_name', 'description']
+    filterset_fields = ['application', 'document_type', 'is_verified']
+    roles_required = ['admin', 'admissions_officer', 'parent']
 
-class ApplicationGuardianViewSet(viewsets.ModelViewSet):
-    queryset = ApplicationGuardian.objects.all()
-    serializer_class = ApplicationGuardianSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['admin', 'staff']
-
-class ApplicationLogViewSet(viewsets.ModelViewSet):
-    queryset = ApplicationLog.objects.all()
-    serializer_class = ApplicationLogSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['admin', 'staff']
-
-class MeritListViewSet(viewsets.ModelViewSet):
-    queryset = MeritList.objects.all()
-    serializer_class = MeritListSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['admin', 'staff']
-
-class MeritListEntryViewSet(viewsets.ModelViewSet):
-    queryset = MeritListEntry.objects.all()
-    serializer_class = MeritListEntrySerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['admin', 'staff']
-
-class AdmissionFormConfigViewSet(viewsets.ModelViewSet):
-    queryset = AdmissionFormConfig.objects.all()
-    serializer_class = AdmissionFormConfigSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['admin', 'staff']
-
-class AdmissionStatisticsViewSet(viewsets.ModelViewSet):
-    queryset = AdmissionStatistics.objects.all()
-    serializer_class = AdmissionStatisticsSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['admin', 'staff']
-
+class ApplicationDocumentDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = ApplicationDocument
+    serializer_class = ApplicationDocumentSerializer
+    roles_required = ['admin', 'admissions_officer']

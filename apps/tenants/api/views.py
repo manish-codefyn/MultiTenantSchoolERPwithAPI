@@ -1,4 +1,6 @@
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from apps.core.api.permissions import TenantAccessPermission, RoleRequiredPermission
 from rest_framework.permissions import IsAuthenticated
 from apps.core.permissions.mixins import TenantAccessMixin
@@ -10,6 +12,14 @@ class TenantViewSet(viewsets.ModelViewSet):
     serializer_class = TenantSerializer
     permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
     required_roles = ['admin', 'super_admin']
+
+    @action(detail=False, methods=['get'])
+    def current(self, request):
+        if not hasattr(request.user, 'tenant'):
+             return Response({"detail": "User has no tenant assigned."}, status=400)
+        
+        serializer = self.get_serializer(request.user.tenant)
+        return Response(serializer.data)
 
 class DomainViewSet(viewsets.ModelViewSet):
     queryset = Domain.objects.all()

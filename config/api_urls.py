@@ -32,7 +32,7 @@ urlpatterns = [
     path(f"{API_PREFIX}admission/", include("apps.admission.api.urls")),
     path(f"{API_PREFIX}analytics/", include("apps.analytics.api.urls")),
     path(f"{API_PREFIX}assignments/", include("apps.assignments.api.urls")),
-    # path(f"{API_PREFIX}attendance/", include("apps.attendance.api.urls")),  # Not created
+    path(f"{API_PREFIX}attendance/", include("apps.attendance.api.urls")),
     path(f"{API_PREFIX}auth/", include("apps.auth.api.urls")),
     path(f"{API_PREFIX}communications/", include("apps.communications.api.urls")),
     path(f"{API_PREFIX}core/", include("apps.core.api.urls")),
@@ -46,6 +46,7 @@ urlpatterns = [
     path(f"{API_PREFIX}security/", include("apps.security.api.urls")),
     path(f"{API_PREFIX}students/", include("apps.students.api.urls")),
     path(f"{API_PREFIX}tenants/", include("apps.tenants.api.urls")),
+    path(f"{API_PREFIX}public/", include("apps.public.api.urls")),
     path(f"{API_PREFIX}transportation/", include("apps.transportation.api.urls")),
     path(f"{API_PREFIX}users/", include("apps.users.api.urls")),
 

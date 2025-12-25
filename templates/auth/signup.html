@@ -23,7 +23,10 @@
                         <div class="card-body p-sm-5">
                             <div class="">
                                 <div class="mb-3 text-center">
-                                    <img src="{{ tenant_logo }}" width="60" alt="Logo">
+                                     {% if square_logo %}
+                                      <img src="{{ square_logo.url }}" width="32" height="32" alt="{{ tenant_name }}" class="rounded-circle">
+                                      {% endif %}
+                                     <span class="ms-2 fw-bold text-dark d-none d-sm-inline">{{ tenant_name }}</span>
                                 </div>
                                 <div class="text-center mb-4">
                                     <h5 class="auth-title">Sign Up</h5>

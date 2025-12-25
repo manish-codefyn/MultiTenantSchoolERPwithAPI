@@ -1,11 +1,15 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from . import views
-
-router = DefaultRouter()
-router.register(r'assignments', views.AssignmentViewSet)
-router.register(r'submissions', views.SubmissionViewSet)
+from django.urls import path
+from apps.assignments.api.views import (
+    AssignmentListCreateAPIView, AssignmentDetailAPIView,
+    SubmissionListCreateAPIView, SubmissionDetailAPIView
+)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    # Assignments
+    path('', AssignmentListCreateAPIView.as_view(), name='assignment-list'),
+    path('<uuid:pk>/', AssignmentDetailAPIView.as_view(), name='assignment-detail'),
+
+    # Submissions
+    path('submissions/', SubmissionListCreateAPIView.as_view(), name='submission-list'),
+    path('submissions/<uuid:pk>/', SubmissionDetailAPIView.as_view(), name='submission-detail'),
 ]

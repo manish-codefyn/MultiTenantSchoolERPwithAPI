@@ -1,224 +1,101 @@
-<!-- Hero Section -->
-<section class="hero-section" style="background: linear-gradient(rgba(13, 110, 253, 0.85), rgba(13, 110, 253, 0.5)), url('static/public/img/1.png') center/cover;">
-    <div class="container">
-        <div class="row align-items-center min-vh-80">
-            <div class="col-lg-8 mx-auto text-center text-white">
-                <!-- Badge -->
-                <div class="mb-4">
-                    <span class="badge bg-white text-primary fs-6 px-4 py-2 rounded-pill shadow-sm">
-                        <i class="bi bi-award-fill me-2"></i>Trusted by 500+ Educational Institutions
-                    </span>
+<!-- Modern Hero Section -->
+<section class="modern-hero-section" id="hero">
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <!-- Left Column: Text & CTA -->
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="hero-badge shadow-sm">
+                    <i class="bi bi-stars me-2"></i> #1 Educational ERP
                 </div>
                 
-                <!-- Main Heading -->
-                <h1 class="display-4 fw-bold mb-4">
-                    Transform Your Educational Institution with 
-                    <span class="text-warning">Smart ERP</span>
+                <h1 class="hero-title animate-up">
+                    Manage Your <br>
+                    Institute with <span class="highlight">Intelligence</span>
                 </h1>
                 
-                <!-- Subtitle -->
-                <p class="lead fs-3 mb-4 opacity-90">
-                    Comprehensive Multi-Tenant Management System for Modern Education
+                <p class="hero-subtitle animate-up delay-100">
+                    A comprehensive, multi-tenant platform designed to streamline administration, academics, and communication for modern educational institutions.
                 </p>
                 
-                <!-- Features List -->
-                <div class="row justify-content-center mb-5">
-                    <div class="col-md-10">
-                        <div class="row g-4">
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center justify-content-center p-3 bg-white bg-opacity-10 rounded-3">
-                                    <i class="bi bi-people-fill fs-2 text-warning me-3"></i>
-                                    <div class="text-start">
-                                        <div class="fw-semibold">Student</div>
-                                        <small class="opacity-90">Management</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center justify-content-center p-3 bg-white bg-opacity-10 rounded-3">
-                                    <i class="bi bi-journal-text fs-2 text-warning me-3"></i>
-                                    <div class="text-start">
-                                        <div class="fw-semibold">Academic</div>
-                                        <small class="opacity-90">Planning</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center justify-content-center p-3 bg-white bg-opacity-10 rounded-3">
-                                    <i class="bi bi-graph-up fs-2 text-warning me-3"></i>
-                                    <div class="text-start">
-                                        <div class="fw-semibold">Performance</div>
-                                        <small class="opacity-90">Analytics</small>
-                                    </div>
-                <!-- Stats -->
-                <div class="row mt-5 pt-4 border-top border-white border-opacity-25">
-                    <div class="col-md-3 col-6">
-                        <div class="text-center">
-                            <h3 class="fw-bold text-warning mb-1">50K+</h3>
-                            <small class="opacity-90">Students Managed</small>
+                <div class="d-flex flex-wrap gap-3 animate-up delay-200 justify-content-center justify-content-lg-start">
+                    <a href="{% url 'signup' %}" class="btn btn-auth-signup btn-lg d-flex align-items-center gap-2">
+                        Get Started Free <i class="bi bi-arrow-right"></i>
+                    </a>
+                    <a href="#features" class="btn btn-auth-login btn-lg d-flex align-items-center gap-2">
+                        <i class="bi bi-play-circle"></i> Watch Demo
+                    </a>
+                </div>
+
+                <div class="mt-5 d-flex align-items-center gap-4 animate-up delay-300 justify-content-center justify-content-lg-start">
+                    <div class="d-flex -space-x-2">
+                         <!-- Avatars (Decorative) -->
+                        <div class="rounded-circle border border-2 border-white bg-primary text-white d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; margin-right: -12px; z-index:3; font-size: 0.9rem;">SJ</div>
+                        <div class="rounded-circle border border-2 border-white bg-success text-white d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; margin-right: -12px; z-index:2; font-size: 0.9rem;">MK</div>
+                        <div class="rounded-circle border border-2 border-white bg-warning text-white d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; z-index:1; font-size: 0.9rem;">AL</div>
+                    </div>
+                    <div>
+                        <div class="fw-bold text-dark fs-5">500+</div>
+                        <div class="small text-muted fw-medium">Global Institutes</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Visuals (Laptop Mockup) -->
+            <div class="col-lg-6">
+                <!-- CSS Laptop Frame -->
+                <div class="laptop-frame animate-up delay-200">
+                    <!-- Screen Component -->
+                    <div class="laptop-screen">
+                        <div class="laptop-display">
+                            {% load static %}
+                            <img src="{% static 'public/img/1.png' %}" alt="EduERP Dashboard" class="img-fluid">
                         </div>
                     </div>
-                    <div class="col-md-3 col-6">
-                        <div class="text-center">
-                            <h3 class="fw-bold text-warning mb-1">500+</h3>
-                            <small class="opacity-90">Institutions</small>
+                    <!-- Base Component -->
+                    <div class="laptop-base"></div>
+
+                    <!-- Floating Glass Card 1 -->
+                    <div class="floating-glass card-1">
+                        <div class="glass-icon">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <div class="glass-content">
+                            <div>Active Students</div>
+                            <div>50,000+</div>
                         </div>
                     </div>
-                    <div class="col-md-3 col-6">
-                        <div class="text-center">
-                            <h3 class="fw-bold text-warning mb-1">25+</h3>
-                            <small class="opacity-90">Modules</small>
+
+                    <!-- Floating Glass Card 2 -->
+                    <div class="floating-glass card-2">
+                        <div class="glass-icon" style="background: linear-gradient(135deg, #10B981 0%, #34D399 100%);">
+                            <i class="bi bi-graph-up-arrow"></i>
                         </div>
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <div class="text-center">
-                            <h3 class="fw-bold text-warning mb-1">24/7</h3>
-                            <small class="opacity-90">Support</small>
+                        <div class="glass-content">
+                            <div>Performance</div>
+                            <div class="text-success">+24.5%</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Scroll Indicator -->
-    <div class="scroll-indicator">
-        <a href="#features" class="text-white">
-            <i class="bi bi-chevron-down fs-4"></i>
-        </a>
-    </div>
 </section>
 
+<!-- Animation Handling (Simulated with CSS) -->
 <style>
-.hero-section {
-    position: relative;
-    padding: 120px 0 100px;
-    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-    overflow: hidden;
-}
-
-.min-vh-80 {
-    min-height: 80vh;
-}
-
-.hero-section h1 {
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    line-height: 1.2;
-}
-
-.hero-section .lead {
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-}
-
-.hero-buttons .btn {
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    border-width: 2px;
-    margin: 0.5rem;
-}
-
-.hero-buttons .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-
-.btn-light:hover {
-    background-color: #f8f9fa;
-    border-color: #f8f9fa;
-}
-
-.btn-outline-light:hover {
-    background-color: rgba(255,255,255,0.1);
-}
-
-.scroll-indicator {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    animation: bounce 2s infinite;
-}
-
-.scroll-indicator a {
-    text-decoration: none;
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-}
-
-.scroll-indicator a:hover {
-    opacity: 1;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateX(-50%) translateY(0);
+    .animate-up {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.8s forwards;
     }
-    40% {
-        transform: translateX(-50%) translateY(-10px);
-    }
-    60% {
-        transform: translateX(-50%) translateY(-5px);
-    }
-}
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
 
-/* Feature Cards Hover Effect */
-.bg-white.bg-opacity-10 {
-    transition: all 0.3s ease;
-}
-
-.bg-white.bg-opacity-10:hover {
-    background-color: rgba(255,255,255,0.2) !important;
-    transform: translateY(-2px);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .hero-section {
-        padding: 100px 0 80px;
-        text-align: center;
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
-    
-    .hero-section h1 {
-        font-size: 2.5rem;
-    }
-    
-    .hero-section .lead {
-        font-size: 1.25rem;
-    }
-    
-    .hero-buttons {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .hero-buttons .btn {
-        margin: 0.5rem 0;
-        width: 100%;
-        max-width: 280px;
-    }
-    
-    .min-vh-80 {
-        min-height: 70vh;
-    }
-    
-    .row.g-4 .col-md-4 {
-        margin-bottom: 1rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .hero-section h1 {
-        font-size: 2rem;
-    }
-    
-    .hero-section .lead {
-        font-size: 1.1rem;
-    }
-    
-    .hero-buttons .btn {
-        padding: 0.8rem 1.5rem;
-        font-size: 1rem;
-    }
-}
 </style>

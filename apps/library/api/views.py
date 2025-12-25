@@ -1,79 +1,166 @@
-from rest_framework import viewsets
-from apps.core.api.permissions import TenantAccessPermission, RoleRequiredPermission
-from rest_framework.permissions import IsAuthenticated
-from apps.core.permissions.mixins import TenantAccessMixin
-from apps.library.models import *
-from .serializers import *
+from rest_framework import status
+from rest_framework.response import Response
+from apps.core.api.views import (
+    BaseListCreateAPIView, BaseRetrieveUpdateDestroyAPIView
+)
+from apps.library.models import (
+    Library, Author, Publisher, BookCategory, Book, BookCopy,
+    BookIssue, Reservation, Fine, FinePayment, LibraryMember,
+    LibraryReport
+)
+from apps.library.api.serializers import (
+    LibrarySerializer, AuthorSerializer, PublisherSerializer,
+    BookCategorySerializer, BookSerializer, BookCopySerializer,
+    BookIssueSerializer, ReservationSerializer, FineSerializer,
+    FinePaymentSerializer, LibraryMemberSerializer, LibraryReportSerializer
+)
 
-class LibraryViewSet(viewsets.ModelViewSet):
-    queryset = Library.objects.all()
+# ============================================================================
+# CATALOG VIEWS
+# ============================================================================
+
+class LibraryListCreateAPIView(BaseListCreateAPIView):
+    model = Library
     serializer_class = LibrarySerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    roles_required = ['admin', 'librarian']
 
-class AuthorViewSet(viewsets.ModelViewSet):
-    queryset = Author.objects.all()
+class LibraryDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Library
+    serializer_class = LibrarySerializer
+    roles_required = ['admin', 'librarian']
+
+
+class AuthorListCreateAPIView(BaseListCreateAPIView):
+    model = Author
     serializer_class = AuthorSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    search_fields = ['name']
+    roles_required = ['admin', 'librarian', 'teacher', 'student']
 
-class PublisherViewSet(viewsets.ModelViewSet):
-    queryset = Publisher.objects.all()
+class AuthorDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Author
+    serializer_class = AuthorSerializer
+    roles_required = ['admin', 'librarian']
+
+
+class PublisherListCreateAPIView(BaseListCreateAPIView):
+    model = Publisher
     serializer_class = PublisherSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    search_fields = ['name']
+    roles_required = ['admin', 'librarian', 'teacher', 'student']
 
-class BookCategoryViewSet(viewsets.ModelViewSet):
-    queryset = BookCategory.objects.all()
+class PublisherDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Publisher
+    serializer_class = PublisherSerializer
+    roles_required = ['admin', 'librarian']
+
+
+class BookCategoryListCreateAPIView(BaseListCreateAPIView):
+    model = BookCategory
     serializer_class = BookCategorySerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    search_fields = ['name']
+    roles_required = ['admin', 'librarian', 'teacher', 'student']
 
-class BookViewSet(viewsets.ModelViewSet):
-    queryset = Book.objects.all()
+class BookCategoryDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = BookCategory
+    serializer_class = BookCategorySerializer
+    roles_required = ['admin', 'librarian']
+
+
+class BookListCreateAPIView(BaseListCreateAPIView):
+    model = Book
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    search_fields = ['title', 'isbn', 'authors__name']
+    filterset_fields = ['category', 'publisher', 'language', 'book_type']
+    roles_required = ['admin', 'librarian', 'teacher', 'student']
 
-class BookCopyViewSet(viewsets.ModelViewSet):
-    queryset = BookCopy.objects.all()
+class BookDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Book
+    serializer_class = BookSerializer
+    roles_required = ['admin', 'librarian']
+
+
+class BookCopyListCreateAPIView(BaseListCreateAPIView):
+    model = BookCopy
     serializer_class = BookCopySerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    search_fields = ['accession_number', 'barcode', 'book__title']
+    filterset_fields = ['book', 'status', 'condition']
+    roles_required = ['admin', 'librarian', 'teacher', 'student']
 
-class BookIssueViewSet(viewsets.ModelViewSet):
-    queryset = BookIssue.objects.all()
+class BookCopyDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = BookCopy
+    serializer_class = BookCopySerializer
+    roles_required = ['admin', 'librarian']
+
+# ============================================================================
+# CIRCULATION VIEWS
+# ============================================================================
+
+class BookIssueListCreateAPIView(BaseListCreateAPIView):
+    model = BookIssue
     serializer_class = BookIssueSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    search_fields = ['issue_number', 'member__first_name', 'book_copy__accession_number']
+    filterset_fields = ['status', 'member', 'issue_date', 'due_date']
+    roles_required = ['admin', 'librarian', 'teacher', 'student']
 
-class ReservationViewSet(viewsets.ModelViewSet):
-    queryset = Reservation.objects.all()
+class BookIssueDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = BookIssue
+    serializer_class = BookIssueSerializer
+    roles_required = ['admin', 'librarian']
+
+
+class ReservationListCreateAPIView(BaseListCreateAPIView):
+    model = Reservation
     serializer_class = ReservationSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    roles_required = ['admin', 'librarian', 'teacher', 'student']
 
-class FineViewSet(viewsets.ModelViewSet):
-    queryset = Fine.objects.all()
+class ReservationDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Reservation
+    serializer_class = ReservationSerializer
+    roles_required = ['admin', 'librarian']
+
+# ============================================================================
+# FINE & REPORT VIEWS
+# ============================================================================
+
+class FineListCreateAPIView(BaseListCreateAPIView):
+    model = Fine
     serializer_class = FineSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    roles_required = ['admin', 'librarian']
 
-class FinePaymentViewSet(viewsets.ModelViewSet):
-    queryset = FinePayment.objects.all()
+class FineDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Fine
+    serializer_class = FineSerializer
+    roles_required = ['admin', 'librarian']
+
+
+class FinePaymentListCreateAPIView(BaseListCreateAPIView):
+    model = FinePayment
     serializer_class = FinePaymentSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    roles_required = ['admin', 'librarian']
 
-class LibraryMemberViewSet(viewsets.ModelViewSet):
-    queryset = LibraryMember.objects.all()
+class FinePaymentDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = FinePayment
+    serializer_class = FinePaymentSerializer
+    roles_required = ['admin', 'librarian']
+
+
+class LibraryMemberListCreateAPIView(BaseListCreateAPIView):
+    model = LibraryMember
     serializer_class = LibraryMemberSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    roles_required = ['admin', 'librarian']
 
-class LibraryReportViewSet(viewsets.ModelViewSet):
-    queryset = LibraryReport.objects.all()
+class LibraryMemberDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = LibraryMember
+    serializer_class = LibraryMemberSerializer
+    roles_required = ['admin', 'librarian']
+
+
+class LibraryReportListCreateAPIView(BaseListCreateAPIView):
+    model = LibraryReport
     serializer_class = LibraryReportSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'librarian', 'admin']
+    roles_required = ['admin', 'librarian']
 
+class LibraryReportDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = LibraryReport
+    serializer_class = LibraryReportSerializer
+    roles_required = ['admin', 'librarian']

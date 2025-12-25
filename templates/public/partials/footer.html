@@ -37,7 +37,7 @@
                 <ul class="list-unstyled small">
                     <li class="mb-2"><a href="{% url 'home' %}" class="text-white-50 hover-underline">Home</a></li>
                     <li class="mb-2"><a href="{% url 'tenant_list' %}" class="text-white-50 hover-underline">Tenants</a></li>
-                    <li class="mb-2"><a href="#" class="text-white-50 hover-underline">Modules</a></li>
+                    <li class="mb-2"><a href="{% url 'home' %}#modules" class="text-white-50 hover-underline">Modules</a></li>
                     <li class="mb-2"><a href="https://www.codefyn.com/inquiry/" class="text-white-50 hover-underline">Support</a></li>
                     <!-- <li class="mb-2"><a href="#" class="text-white-50 hover-underline">Privacy Policy</a></li> -->
                 </ul>
@@ -47,7 +47,7 @@
             <h5 class="fw-bold mb-4 text-white">Powered By</h5>
             <div class="mt-3">
                 <a href="http://www.codefyn.com" target="_blank">
-                    <img src="{% static 'img/logo.png' %}" 
+                    <img src="{% static 'public/img/logo.png' %}" 
                         alt="Codefyn Logo"  width="165"
                         class="filter-white" style=" filter: brightness(0) invert(1);" >
                 </a>

@@ -1,83 +1,121 @@
 from rest_framework import serializers
-from apps.analytics.models import *
+from django.contrib.auth import get_user_model
+from apps.core.api.serializers import TenantAwareSerializer, RelatedFieldAlternative
+from apps.analytics.models import (
+    AuditAnalysisReport, AuditPattern, AuditAlert, AuditDashboard,
+    AuditMetric, AuditMetricValue, DataSource, KPIModel
+)
+# Import core if needed for AuditLog, but usually string reference or ID is fine for M2M unless detailed view needed.
+# from apps.core.models import AuditLog
 
-class AuditAnalysisReportSerializer(serializers.ModelSerializer):
+User = get_user_model()
+
+# ============================================================================
+# HELPER SERIALIZERS
+# ============================================================================
+
+class SimpleUserSerializer(serializers.ModelSerializer):
+    """Simple serializer for user details"""
+    full_name = serializers.CharField(source='get_full_name', read_only=True)
+    
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'full_name', 'role']
+
+# ============================================================================
+# AUDIT SERIALIZERS
+# ============================================================================
+
+class AuditAnalysisReportSerializer(TenantAwareSerializer):
+    generated_by_detail = RelatedFieldAlternative(
+        source='generated_by',
+        read_only=True,
+        serializer=SimpleUserSerializer
+    )
+
     class Meta:
         model = AuditAnalysisReport
         fields = '__all__'
 
-class AuditPatternSerializer(serializers.ModelSerializer):
+class AuditPatternSerializer(TenantAwareSerializer):
     class Meta:
         model = AuditPattern
         fields = '__all__'
 
-class AuditAlertSerializer(serializers.ModelSerializer):
+class AuditAlertSerializer(TenantAwareSerializer):
+    pattern_detail = RelatedFieldAlternative(
+        source='pattern',
+        read_only=True,
+        serializer=AuditPatternSerializer
+    )
+    assigned_to_detail = RelatedFieldAlternative(
+        source='assigned_to',
+        read_only=True,
+        serializer=SimpleUserSerializer
+    )
+    acknowledged_by_detail = RelatedFieldAlternative(
+        source='acknowledged_by',
+        read_only=True,
+        serializer=SimpleUserSerializer
+    )
+    resolved_by_detail = RelatedFieldAlternative(
+        source='resolved_by',
+        read_only=True,
+        serializer=SimpleUserSerializer
+    )
+
     class Meta:
         model = AuditAlert
         fields = '__all__'
 
-class AuditDashboardSerializer(serializers.ModelSerializer):
+class AuditDashboardSerializer(TenantAwareSerializer):
+    owner_detail = RelatedFieldAlternative(
+        source='owner',
+        read_only=True,
+        serializer=SimpleUserSerializer
+    )
+
     class Meta:
         model = AuditDashboard
         fields = '__all__'
 
-class AuditMetricSerializer(serializers.ModelSerializer):
+class AuditMetricSerializer(TenantAwareSerializer):
     class Meta:
         model = AuditMetric
         fields = '__all__'
 
-class AuditMetricValueSerializer(serializers.ModelSerializer):
+class AuditMetricValueSerializer(TenantAwareSerializer):
+    metric_detail = RelatedFieldAlternative(
+        source='metric',
+        read_only=True,
+        serializer=AuditMetricSerializer
+    )
+
     class Meta:
         model = AuditMetricValue
         fields = '__all__'
 
-class DataSourceSerializer(serializers.ModelSerializer):
+# ============================================================================
+# ANALYTICS SERIALIZERS
+# ============================================================================
+
+class DataSourceSerializer(TenantAwareSerializer):
     class Meta:
         model = DataSource
         fields = '__all__'
 
-class KPIModelSerializer(serializers.ModelSerializer):
+class KPIModelSerializer(TenantAwareSerializer):
+    created_by_detail = RelatedFieldAlternative(
+        source='created_by',
+        read_only=True,
+        serializer=SimpleUserSerializer
+    )
+    
+    # Computed
+    current_value = serializers.FloatField(read_only=True)
+    trend = serializers.CharField(read_only=True)
+
     class Meta:
         model = KPIModel
         fields = '__all__'
-
-class KPIValueSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = KPIValue
-        fields = '__all__'
-
-class ReportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Report
-        fields = '__all__'
-
-class ReportExecutionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReportExecution
-        fields = '__all__'
-
-class DashboardSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Dashboard
-        fields = '__all__'
-
-class DashboardWidgetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DashboardWidget
-        fields = '__all__'
-
-class PredictiveModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PredictiveModel
-        fields = '__all__'
-
-class StudentPerformanceAnalyticsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StudentPerformanceAnalytics
-        fields = '__all__'
-
-class InstitutionalAnalyticsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InstitutionalAnalytics
-        fields = '__all__'
-
+        read_only_fields = ['id', 'current_value', 'trend']

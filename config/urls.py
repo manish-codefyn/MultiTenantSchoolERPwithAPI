@@ -5,6 +5,9 @@ from django.urls import path, include
 from apps.core import views as core_views
 
 urlpatterns = [
+    # API URLs (Priority)
+    path("", include("config.api_urls")),
+
     path("admin/", admin.site.urls),
 
     # Web / App URLs
@@ -35,9 +38,6 @@ urlpatterns = [
     # Master Dashboard
     path("dashboard/",core_views.MasterDashboardView.as_view(),name="master_dashboard",),
 
-    # API URLs (Single Import)
-    path("", include("config.api_urls")),
-    
 ]
 
 if settings.DEBUG:

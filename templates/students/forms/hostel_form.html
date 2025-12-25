@@ -15,7 +15,7 @@
         <div>
             {% if student %}
             <a href="{% url 'students:student_onboarding' pk=student.pk %}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Onboarding" %}
+                <i class="bx bx-left me-2"></i>{% trans "Back to Onboarding" %}
             </a>
             {% endif %}
         </div>
@@ -28,7 +28,7 @@
                 {{ form|crispy }}
                 <div class="d-flex justify-content-end mt-4">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>{% trans "Save & Continue" %}
+                        <i class="bx bx-save me-2"></i>{% trans "Save & Continue" %}
                     </button>
                 </div>
             </form>

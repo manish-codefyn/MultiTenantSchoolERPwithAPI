@@ -1,57 +1,154 @@
-from rest_framework import viewsets
-from apps.core.api.permissions import TenantAccessPermission, RoleRequiredPermission
-from rest_framework.permissions import IsAuthenticated
-from apps.core.permissions.mixins import TenantAccessMixin
-from apps.events.models import *
-from .serializers import *
+from rest_framework import status
+from rest_framework.response import Response
+from apps.core.api.views import (
+    BaseListCreateAPIView, BaseRetrieveUpdateDestroyAPIView
+)
+from apps.events.models import (
+    EventCategory, Event, EventRegistration, EventDocument,
+    EventTask, EventExpense, EventGallery, GalleryImage,
+    EventFeedback, RecurringEventPattern
+)
+from apps.events.api.serializers import (
+    EventCategorySerializer, EventSerializer, EventRegistrationSerializer,
+    EventDocumentSerializer, EventTaskSerializer, EventExpenseSerializer,
+    EventGallerySerializer, GalleryImageSerializer, EventFeedbackSerializer,
+    RecurringEventPatternSerializer
+)
 
-class EventCategoryViewSet(viewsets.ModelViewSet):
-    queryset = EventCategory.objects.all()
+# ============================================================================
+# EVENT CONFIG VIEWS
+# ============================================================================
+
+class EventCategoryListCreateAPIView(BaseListCreateAPIView):
+    model = EventCategory
     serializer_class = EventCategorySerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['name', 'code']
+    roles_required = ['admin', 'event_manager', 'teacher']
 
-class EventViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.all()
+class EventCategoryDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = EventCategory
+    serializer_class = EventCategorySerializer
+    roles_required = ['admin', 'event_manager']
+
+# ============================================================================
+# EVENT CORE VIEWS
+# ============================================================================
+
+class EventListCreateAPIView(BaseListCreateAPIView):
+    model = Event
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['title', 'description', 'venue']
+    filterset_fields = ['event_type', 'category', 'status', 'is_published', 'is_active']
+    roles_required = ['admin', 'event_manager', 'teacher', 'student', 'parent']
 
-class EventRegistrationViewSet(viewsets.ModelViewSet):
-    queryset = EventRegistration.objects.all()
+class EventDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Event
+    serializer_class = EventSerializer
+    roles_required = ['admin', 'event_manager']
+
+
+class EventRegistrationListCreateAPIView(BaseListCreateAPIView):
+    model = EventRegistration
     serializer_class = EventRegistrationSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['student__first_name', 'external_name']
+    filterset_fields = ['event', 'registration_type', 'status', 'is_active']
+    roles_required = ['admin', 'event_manager', 'teacher', 'student', 'parent']
 
-class EventDocumentViewSet(viewsets.ModelViewSet):
-    queryset = EventDocument.objects.all()
+class EventRegistrationDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = EventRegistration
+    serializer_class = EventRegistrationSerializer
+    roles_required = ['admin', 'event_manager']
+
+
+class EventDocumentListCreateAPIView(BaseListCreateAPIView):
+    model = EventDocument
     serializer_class = EventDocumentSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['name']
+    filterset_fields = ['event', 'document_type', 'is_public']
+    roles_required = ['admin', 'event_manager', 'teacher', 'student']
 
-class EventTaskViewSet(viewsets.ModelViewSet):
-    queryset = EventTask.objects.all()
+class EventDocumentDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = EventDocument
+    serializer_class = EventDocumentSerializer
+    roles_required = ['admin', 'event_manager']
+
+# ============================================================================
+# EVENT MANAGEMENT VIEWS
+# ============================================================================
+
+class EventTaskListCreateAPIView(BaseListCreateAPIView):
+    model = EventTask
     serializer_class = EventTaskSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['title']
+    filterset_fields = ['event', 'assigned_to', 'priority', 'status']
+    roles_required = ['admin', 'event_manager', 'teacher']
 
-class EventExpenseViewSet(viewsets.ModelViewSet):
-    queryset = EventExpense.objects.all()
+class EventTaskDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = EventTask
+    serializer_class = EventTaskSerializer
+    roles_required = ['admin', 'event_manager']
+
+
+class EventExpenseListCreateAPIView(BaseListCreateAPIView):
+    model = EventExpense
     serializer_class = EventExpenseSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['description', 'vendor_name']
+    filterset_fields = ['event', 'category', 'payment_status']
+    roles_required = ['admin', 'event_manager']
 
-class EventGalleryViewSet(viewsets.ModelViewSet):
-    queryset = EventGallery.objects.all()
+class EventExpenseDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = EventExpense
+    serializer_class = EventExpenseSerializer
+    roles_required = ['admin', 'event_manager']
+
+# ============================================================================
+# EVENT MEDIA & FEEDBACK VIEWS
+# ============================================================================
+
+class EventGalleryListCreateAPIView(BaseListCreateAPIView):
+    model = EventGallery
     serializer_class = EventGallerySerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    search_fields = ['title']
+    filterset_fields = ['event', 'is_published', 'is_featured']
+    roles_required = ['admin', 'event_manager', 'teacher', 'student', 'parent']
 
-class GalleryImageViewSet(viewsets.ModelViewSet):
-    queryset = GalleryImage.objects.all()
+class EventGalleryDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = EventGallery
+    serializer_class = EventGallerySerializer
+    roles_required = ['admin', 'event_manager']
+
+
+class GalleryImageListCreateAPIView(BaseListCreateAPIView):
+    model = GalleryImage
     serializer_class = GalleryImageSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    filterset_fields = ['gallery', 'is_featured']
+    roles_required = ['admin', 'event_manager', 'teacher', 'student', 'parent']
 
-class EventFeedbackViewSet(viewsets.ModelViewSet):
-    queryset = EventFeedback.objects.all()
+class GalleryImageDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = GalleryImage
+    serializer_class = GalleryImageSerializer
+    roles_required = ['admin', 'event_manager']
+
+
+class EventFeedbackListCreateAPIView(BaseListCreateAPIView):
+    model = EventFeedback
     serializer_class = EventFeedbackSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    filterset_fields = ['event', 'overall_rating', 'is_approved']
+    roles_required = ['admin', 'event_manager', 'teacher', 'student', 'parent']
 
-class RecurringEventPatternViewSet(viewsets.ModelViewSet):
-    queryset = RecurringEventPattern.objects.all()
+class EventFeedbackDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = EventFeedback
+    serializer_class = EventFeedbackSerializer
+    roles_required = ['admin', 'event_manager']
+
+
+class RecurringEventPatternListCreateAPIView(BaseListCreateAPIView):
+    model = RecurringEventPattern
     serializer_class = RecurringEventPatternSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
+    filterset_fields = ['base_event', 'recurrence_type', 'is_active']
+    roles_required = ['admin', 'event_manager']
 
+class RecurringEventPatternDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = RecurringEventPattern
+    serializer_class = RecurringEventPatternSerializer
+    roles_required = ['admin', 'event_manager']

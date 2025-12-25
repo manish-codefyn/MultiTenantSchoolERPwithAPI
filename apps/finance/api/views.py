@@ -1,109 +1,206 @@
-from rest_framework import viewsets
-from apps.core.api.permissions import TenantAccessPermission, RoleRequiredPermission
-from rest_framework.permissions import IsAuthenticated
-from apps.core.permissions.mixins import TenantAccessMixin
-from apps.finance.models import *
-from .serializers import *
+from rest_framework import status
+from apps.core.api.views import (
+    BaseListCreateAPIView, BaseRetrieveUpdateDestroyAPIView
+)
+from apps.finance.models import (
+    FeeStructure, FeeDiscount, Invoice, InvoiceItem, AppliedDiscount,
+    Payment, Refund, ExpenseCategory, Expense, Budget, BudgetCategory,
+    BudgetItem, BudgetTemplate, BudgetTemplateItem, FinancialTransaction,
+    BankAccount, FinancialReport
+)
+from .serializers import (
+    FeeStructureSerializer, FeeDiscountSerializer, InvoiceSerializer,
+    InvoiceItemSerializer, AppliedDiscountSerializer, PaymentSerializer,
+    RefundSerializer, ExpenseCategorySerializer, ExpenseSerializer,
+    BudgetSerializer, BudgetCategorySerializer, BudgetItemSerializer,
+    BudgetTemplateSerializer, BudgetTemplateItemSerializer,
+    FinancialTransactionSerializer, BankAccountSerializer,
+    FinancialReportSerializer
+)
 
-class FeeStructureViewSet(viewsets.ModelViewSet):
-    queryset = FeeStructure.objects.all()
+# FeeStructure
+class FeeStructureListCreateAPIView(BaseListCreateAPIView):
+    model = FeeStructure
     serializer_class = FeeStructureSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class FeeDiscountViewSet(viewsets.ModelViewSet):
-    queryset = FeeDiscount.objects.all()
+class FeeStructureDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = FeeStructure
+    serializer_class = FeeStructureSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# FeeDiscount
+class FeeDiscountListCreateAPIView(BaseListCreateAPIView):
+    model = FeeDiscount
     serializer_class = FeeDiscountSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class InvoiceViewSet(viewsets.ModelViewSet):
-    queryset = Invoice.objects.all()
+class FeeDiscountDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = FeeDiscount
+    serializer_class = FeeDiscountSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# Invoice
+class InvoiceListCreateAPIView(BaseListCreateAPIView):
+    model = Invoice
     serializer_class = InvoiceSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class InvoiceItemViewSet(viewsets.ModelViewSet):
-    queryset = InvoiceItem.objects.all()
+class InvoiceDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Invoice
+    serializer_class = InvoiceSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# InvoiceItem
+class InvoiceItemListCreateAPIView(BaseListCreateAPIView):
+    model = InvoiceItem
     serializer_class = InvoiceItemSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class AppliedDiscountViewSet(viewsets.ModelViewSet):
-    queryset = AppliedDiscount.objects.all()
+class InvoiceItemDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = InvoiceItem
+    serializer_class = InvoiceItemSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# AppliedDiscount
+class AppliedDiscountListCreateAPIView(BaseListCreateAPIView):
+    model = AppliedDiscount
     serializer_class = AppliedDiscountSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class PaymentViewSet(viewsets.ModelViewSet):
-    queryset = Payment.objects.all()
+class AppliedDiscountDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = AppliedDiscount
+    serializer_class = AppliedDiscountSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# Payment
+class PaymentListCreateAPIView(BaseListCreateAPIView):
+    model = Payment
     serializer_class = PaymentSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class RefundViewSet(viewsets.ModelViewSet):
-    queryset = Refund.objects.all()
+class PaymentDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Payment
+    serializer_class = PaymentSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# Refund
+class RefundListCreateAPIView(BaseListCreateAPIView):
+    model = Refund
     serializer_class = RefundSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class ExpenseCategoryViewSet(viewsets.ModelViewSet):
-    queryset = ExpenseCategory.objects.all()
+class RefundDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Refund
+    serializer_class = RefundSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# ExpenseCategory
+class ExpenseCategoryListCreateAPIView(BaseListCreateAPIView):
+    model = ExpenseCategory
     serializer_class = ExpenseCategorySerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class ExpenseViewSet(viewsets.ModelViewSet):
-    queryset = Expense.objects.all()
+class ExpenseCategoryDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = ExpenseCategory
+    serializer_class = ExpenseCategorySerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# Expense
+class ExpenseListCreateAPIView(BaseListCreateAPIView):
+    model = Expense
     serializer_class = ExpenseSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class BudgetViewSet(viewsets.ModelViewSet):
-    queryset = Budget.objects.all()
+class ExpenseDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Expense
+    serializer_class = ExpenseSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# Budget
+class BudgetListCreateAPIView(BaseListCreateAPIView):
+    model = Budget
     serializer_class = BudgetSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class BudgetCategoryViewSet(viewsets.ModelViewSet):
-    queryset = BudgetCategory.objects.all()
+class BudgetDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Budget
+    serializer_class = BudgetSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# BudgetCategory
+class BudgetCategoryListCreateAPIView(BaseListCreateAPIView):
+    model = BudgetCategory
     serializer_class = BudgetCategorySerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class BudgetItemViewSet(viewsets.ModelViewSet):
-    queryset = BudgetItem.objects.all()
+class BudgetCategoryDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = BudgetCategory
+    serializer_class = BudgetCategorySerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# BudgetItem
+class BudgetItemListCreateAPIView(BaseListCreateAPIView):
+    model = BudgetItem
     serializer_class = BudgetItemSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class BudgetTemplateViewSet(viewsets.ModelViewSet):
-    queryset = BudgetTemplate.objects.all()
+class BudgetItemDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = BudgetItem
+    serializer_class = BudgetItemSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# BudgetTemplate
+class BudgetTemplateListCreateAPIView(BaseListCreateAPIView):
+    model = BudgetTemplate
     serializer_class = BudgetTemplateSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class BudgetTemplateItemViewSet(viewsets.ModelViewSet):
-    queryset = BudgetTemplateItem.objects.all()
+class BudgetTemplateDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = BudgetTemplate
+    serializer_class = BudgetTemplateSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# BudgetTemplateItem
+class BudgetTemplateItemListCreateAPIView(BaseListCreateAPIView):
+    model = BudgetTemplateItem
     serializer_class = BudgetTemplateItemSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class FinancialTransactionViewSet(viewsets.ModelViewSet):
-    queryset = FinancialTransaction.objects.all()
+class BudgetTemplateItemDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = BudgetTemplateItem
+    serializer_class = BudgetTemplateItemSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# FinancialTransaction
+class FinancialTransactionListCreateAPIView(BaseListCreateAPIView):
+    model = FinancialTransaction
     serializer_class = FinancialTransactionSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class BankAccountViewSet(viewsets.ModelViewSet):
-    queryset = BankAccount.objects.all()
+class FinancialTransactionDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = FinancialTransaction
+    serializer_class = FinancialTransactionSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# BankAccount
+class BankAccountListCreateAPIView(BaseListCreateAPIView):
+    model = BankAccount
     serializer_class = BankAccountSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
-class FinancialReportViewSet(viewsets.ModelViewSet):
-    queryset = FinancialReport.objects.all()
+class BankAccountDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = BankAccount
+    serializer_class = BankAccountSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']
+
+# FinancialReport
+class FinancialReportListCreateAPIView(BaseListCreateAPIView):
+    model = FinancialReport
     serializer_class = FinancialReportSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['accountant', 'admin', 'parent']
+    roles_required = ['ACCOUNTANT', 'ADMIN']
 
+class FinancialReportDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = FinancialReport
+    serializer_class = FinancialReportSerializer
+    roles_required = ['ACCOUNTANT', 'ADMIN']

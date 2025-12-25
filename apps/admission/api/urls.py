@@ -1,19 +1,25 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from . import views
-
-router = DefaultRouter()
-router.register(r'admissioncycles', views.AdmissionCycleViewSet)
-router.register(r'admissionprograms', views.AdmissionProgramViewSet)
-router.register(r'onlineapplications', views.OnlineApplicationViewSet)
-router.register(r'applicationdocuments', views.ApplicationDocumentViewSet)
-router.register(r'applicationguardians', views.ApplicationGuardianViewSet)
-router.register(r'applicationlogs', views.ApplicationLogViewSet)
-router.register(r'meritlists', views.MeritListViewSet)
-router.register(r'meritlistentrys', views.MeritListEntryViewSet)
-router.register(r'admissionformconfigs', views.AdmissionFormConfigViewSet)
-router.register(r'admissionstatisticss', views.AdmissionStatisticsViewSet)
+from django.urls import path
+from apps.admission.api.views import (
+    AdmissionCycleListCreateAPIView, AdmissionCycleDetailAPIView,
+    AdmissionProgramListCreateAPIView, AdmissionProgramDetailAPIView,
+    OnlineApplicationListCreateAPIView, OnlineApplicationDetailAPIView,
+    ApplicationDocumentListCreateAPIView, ApplicationDocumentDetailAPIView
+)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    # Cycles
+    path('cycles/', AdmissionCycleListCreateAPIView.as_view(), name='admissioncycle-list'),
+    path('cycles/<uuid:pk>/', AdmissionCycleDetailAPIView.as_view(), name='admissioncycle-detail'),
+
+    # Programs
+    path('programs/', AdmissionProgramListCreateAPIView.as_view(), name='admissionprogram-list'),
+    path('programs/<uuid:pk>/', AdmissionProgramDetailAPIView.as_view(), name='admissionprogram-detail'),
+
+    # Applications
+    path('applications/', OnlineApplicationListCreateAPIView.as_view(), name='onlineapplication-list'),
+    path('applications/<uuid:pk>/', OnlineApplicationDetailAPIView.as_view(), name='onlineapplication-detail'),
+
+    # Documents
+    path('documents/', ApplicationDocumentListCreateAPIView.as_view(), name='applicationdocument-list'),
+    path('documents/<uuid:pk>/', ApplicationDocumentDetailAPIView.as_view(), name='applicationdocument-detail'),
 ]

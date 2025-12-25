@@ -3,7 +3,20 @@ from apps.core.api.permissions import TenantAccessPermission, RoleRequiredPermis
 from rest_framework.permissions import IsAuthenticated
 from apps.core.permissions.mixins import TenantAccessMixin
 from apps.auth.models import *
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from .serializers import *
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+class APILogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
 
 class RolePermissionViewSet(viewsets.ModelViewSet):
     queryset = RolePermission.objects.all()

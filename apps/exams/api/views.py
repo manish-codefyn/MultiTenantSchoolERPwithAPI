@@ -1,55 +1,137 @@
-from rest_framework import viewsets
-from apps.core.api.permissions import TenantAccessPermission, RoleRequiredPermission
-from rest_framework.permissions import IsAuthenticated
-from apps.core.permissions.mixins import TenantAccessMixin
-from apps.exams.models import *
-from .serializers import *
+from rest_framework import status
+from rest_framework.response import Response
+from apps.core.api.views import (
+    BaseListCreateAPIView, BaseRetrieveUpdateDestroyAPIView
+)
+from apps.exams.models import (
+    ExamType, Exam, ExamSubject, ExamResult, SubjectResult,
+    MarkSheet, CompartmentExam, ResultStatistics
+)
+from apps.exams.api.serializers import (
+    ExamTypeSerializer, ExamSerializer, ExamSubjectSerializer,
+    ExamResultSerializer, SubjectResultSerializer, MarkSheetSerializer,
+    CompartmentExamSerializer, ResultStatisticsSerializer
+)
 
-class ExamTypeViewSet(viewsets.ModelViewSet):
-    queryset = ExamType.objects.all()
+# ============================================================================
+# EXAM TYPE VIEWS
+# ============================================================================
+
+class ExamTypeListCreateAPIView(BaseListCreateAPIView):
+    model = ExamType
     serializer_class = ExamTypeSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    search_fields = ['name', 'code']
+    roles_required = ['admin', 'principal', 'teacher', 'student', 'parent']
 
-class ExamViewSet(viewsets.ModelViewSet):
-    queryset = Exam.objects.all()
+class ExamTypeDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = ExamType
+    serializer_class = ExamTypeSerializer
+    roles_required = ['admin', 'principal', 'teacher']
+
+# ============================================================================
+# EXAM VIEWS
+# ============================================================================
+
+class ExamListCreateAPIView(BaseListCreateAPIView):
+    model = Exam
     serializer_class = ExamSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    search_fields = ['name', 'code']
+    filterset_fields = ['exam_type', 'academic_year', 'class_name', 'status', 'is_published']
+    roles_required = ['admin', 'principal', 'teacher', 'student', 'parent']
 
-class ExamSubjectViewSet(viewsets.ModelViewSet):
-    queryset = ExamSubject.objects.all()
+class ExamDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = Exam
+    serializer_class = ExamSerializer
+    roles_required = ['admin', 'principal', 'teacher']
+
+# ============================================================================
+# EXAM SUBJECT VIEWS
+# ============================================================================
+
+class ExamSubjectListCreateAPIView(BaseListCreateAPIView):
+    model = ExamSubject
     serializer_class = ExamSubjectSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    filterset_fields = ['exam', 'subject', 'exam_date']
+    roles_required = ['admin', 'principal', 'teacher', 'student', 'parent']
 
-class ExamResultViewSet(viewsets.ModelViewSet):
-    queryset = ExamResult.objects.all()
+class ExamSubjectDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = ExamSubject
+    serializer_class = ExamSubjectSerializer
+    roles_required = ['admin', 'principal', 'teacher']
+
+# ============================================================================
+# EXAM RESULT VIEWS
+# ============================================================================
+
+class ExamResultListCreateAPIView(BaseListCreateAPIView):
+    model = ExamResult
     serializer_class = ExamResultSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    search_fields = ['student__first_name', 'student__admission_number']
+    filterset_fields = ['exam', 'student', 'result_status', 'is_published', 'overall_grade']
+    roles_required = ['admin', 'principal', 'teacher', 'student', 'parent']
 
-class SubjectResultViewSet(viewsets.ModelViewSet):
-    queryset = SubjectResult.objects.all()
+class ExamResultDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = ExamResult
+    serializer_class = ExamResultSerializer
+    roles_required = ['admin', 'principal', 'teacher']
+
+# ============================================================================
+# SUBJECT RESULT VIEWS
+# ============================================================================
+
+class SubjectResultListCreateAPIView(BaseListCreateAPIView):
+    model = SubjectResult
     serializer_class = SubjectResultSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    filterset_fields = ['exam_result', 'exam_subject', 'is_pass']
+    roles_required = ['admin', 'principal', 'teacher', 'student', 'parent']
 
-class MarkSheetViewSet(viewsets.ModelViewSet):
-    queryset = MarkSheet.objects.all()
+class SubjectResultDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = SubjectResult
+    serializer_class = SubjectResultSerializer
+    roles_required = ['admin', 'principal', 'teacher']
+
+# ============================================================================
+# MARK SHEET VIEWS
+# ============================================================================
+
+class MarkSheetListCreateAPIView(BaseListCreateAPIView):
+    model = MarkSheet
     serializer_class = MarkSheetSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    search_fields = ['mark_sheet_number', 'verification_code']
+    filterset_fields = ['exam_result', 'is_issued', 'is_verified']
+    roles_required = ['admin', 'principal', 'teacher', 'student', 'parent']
 
-class CompartmentExamViewSet(viewsets.ModelViewSet):
-    queryset = CompartmentExam.objects.all()
+class MarkSheetDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = MarkSheet
+    serializer_class = MarkSheetSerializer
+    roles_required = ['admin', 'principal', 'teacher']
+
+# ============================================================================
+# COMPARTMENT EXAM VIEWS
+# ============================================================================
+
+class CompartmentExamListCreateAPIView(BaseListCreateAPIView):
+    model = CompartmentExam
     serializer_class = CompartmentExamSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    filterset_fields = ['original_result', 'subject', 'status']
+    roles_required = ['admin', 'principal', 'teacher', 'student', 'parent']
 
-class ResultStatisticsViewSet(viewsets.ModelViewSet):
-    queryset = ResultStatistics.objects.all()
+class CompartmentExamDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = CompartmentExam
+    serializer_class = CompartmentExamSerializer
+    roles_required = ['admin', 'principal', 'teacher']
+
+# ============================================================================
+# STATISTICS VIEWS
+# ============================================================================
+
+class ResultStatisticsListCreateAPIView(BaseListCreateAPIView):
+    model = ResultStatistics
     serializer_class = ResultStatisticsSerializer
-    permission_classes = [IsAuthenticated, TenantAccessPermission, RoleRequiredPermission]
-    required_roles = ['teacher', 'student', 'parent', 'admin']
+    filterset_fields = ['exam']
+    roles_required = ['admin', 'principal', 'teacher']
 
+class ResultStatisticsDetailAPIView(BaseRetrieveUpdateDestroyAPIView):
+    model = ResultStatistics
+    serializer_class = ResultStatisticsSerializer
+    roles_required = ['admin', 'principal', 'teacher']
