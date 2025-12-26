@@ -19,7 +19,12 @@ from .views import (
     GradeListCreateAPIView, GradeDetailAPIView
 )
 
+from .dashboard_view import AcademicsDashboardAPIView
+
 urlpatterns = [
+    # Dashboard
+    path('dashboard/', AcademicsDashboardAPIView.as_view(), name='dashboard'),
+
     # Academic Year
     path('academic-years/', AcademicYearListCreateAPIView.as_view(), name='academic-year-list'),
     path('academic-years/<uuid:pk>/', AcademicYearDetailAPIView.as_view(), name='academic-year-detail'),

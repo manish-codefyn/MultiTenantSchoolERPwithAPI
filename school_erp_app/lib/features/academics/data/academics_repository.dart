@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/network/api_client.dart';
-import 'models/academic_year.dart';
 
 final academicsRepositoryProvider = Provider((ref) => AcademicsRepository(ref));
 
@@ -9,16 +8,17 @@ class AcademicsRepository {
 
   AcademicsRepository(this._ref);
 
-  Future<List<AcademicYear>> getAcademicYears() async {
-    final dio = _ref.read(apiClientProvider).client;
-    final response = await dio.get('academics/academicyears/'); // Adjust endpoint as needed
-    
-    // Assuming API returns { "results": [...] } or just [...]
-    final data = response.data;
-    final List<dynamic> results = (data is Map && data.containsKey('results')) 
-        ? data['results'] 
-        : (data is List ? data : []);
-
-    return results.map((json) => AcademicYear.fromJson(json)).toList();
+  Future<Map<String, dynamic>> getDashboardStats() async {
+    try {
+      final client = _ref.read(apiClientProvider).client;
+      final response = await client.get('academics/dashboard/');
+      return response.data;
+    } catch (e) {
+      rethrow;
+    }
   }
 }
+
+final dashboardStatsProvider = FutureProvider.autoDispose((ref) async {
+  return ref.watch(academicsRepositoryProvider).getDashboardStats();
+});

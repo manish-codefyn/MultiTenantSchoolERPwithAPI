@@ -7,7 +7,7 @@ import '../../features/students/presentation/student_list_screen.dart';
 import '../../features/students/presentation/student_form_screen.dart';
 import '../../features/students/presentation/student_detail_screen.dart';
 import '../../features/students/domain/student.dart';
-import '../../features/academics/presentation/academics_screen.dart';
+import '../../features/academics/presentation/academics_dashboard_screen.dart';
 import '../../features/hr/presentation/staff_list_screen.dart';
 import '../../features/finance/presentation/fee_list_screen.dart';
 import '../../features/attendance/presentation/screens/attendance_dashboard_screen.dart';
@@ -52,7 +52,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/academics',
-        builder: (context, state) => const AcademicsScreen(),
+        builder: (context, state) => const AcademicsDashboardScreen(),
       ),
       GoRoute(
         path: '/hr/staff',
