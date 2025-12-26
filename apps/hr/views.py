@@ -5737,7 +5737,14 @@ class StaffDocumentVerifyView(BaseView):
 
     permission_required = "hr.verify_staffdocument"
     roles_required = ["admin", "hr_manager"]
-    http_method_names = ["post"]
+    http_method_names = ["get", "post"]
+    template_name = "hr/documents/verify.html"
+
+    def get(self, request, *args, **kwargs):
+        document = get_object_or_404(
+            StaffDocument.objects.filter(tenant=get_current_tenant()), pk=kwargs["pk"]
+        )
+        return render(request, self.template_name, {"document": document})
 
     def post(self, request, *args, **kwargs):
         document = get_object_or_404(
@@ -5745,9 +5752,12 @@ class StaffDocumentVerifyView(BaseView):
         )
 
         if document.is_verified:
-            return JsonResponse(
-                {"success": False, "error": "Document is already verified."}
-            )
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse(
+                    {"success": False, "error": "Document is already verified."}
+                )
+            messages.warning(request, "Document is already verified.")
+            return redirect("hr:staff_detail", pk=document.staff.pk)
 
         # Verify the document
         document.is_verified = True
@@ -5768,9 +5778,13 @@ class StaffDocumentVerifyView(BaseView):
             severity="INFO",
         )
 
-        return JsonResponse(
-            {"success": True, "message": "Document verified successfully."}
-        )
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse(
+                {"success": True, "message": "Document verified successfully."}
+            )
+            
+        messages.success(request, "Document verified successfully.")
+        return redirect("hr:staff_detail", pk=document.staff.pk)
 
 
 # ==================== ADDRESS VIEWS ====================

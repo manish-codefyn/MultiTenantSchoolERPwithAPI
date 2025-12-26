@@ -235,18 +235,26 @@ class SoftDeleteModel(models.Model):
 
     def _log_deletion_event(self, user, reason):
         """Log deletion for security audit"""
-        from apps.security.models import SecurityEvent
-        SecurityEvent.objects.create(
-            event_type='SOFT_DELETE',
-            severity='MEDIUM',
-            user=user,
-            description=f'{self.__class__.__name__} soft deleted: {reason}',
-            metadata={
-                'model': self.__class__.__name__,
-                'object_id': str(self.pk),
-                'deletion_reason': reason
-            }
-        )
+        try:
+            from apps.security.models import AuditLog
+            AuditLog.log_event(
+                event_type='SOFT_DELETE',
+                description=f'{self.__class__.__name__} soft deleted: {reason}',
+                user=user,
+                severity='MEDIUM',
+                outcome='SUCCESS',
+                resource=self,
+                metadata={
+                    'model': self.__class__.__name__,
+                    'object_id': str(self.pk),
+                    'deletion_reason': reason
+                }
+            )
+        except Exception as e:
+            # Don't fail deletion if audit logging fails
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f'Failed to log deletion event: {e}')
 
     def _log_restoration_event(self, user):
         """Log restoration for audit trail"""

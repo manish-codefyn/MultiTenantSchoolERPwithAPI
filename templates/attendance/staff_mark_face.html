@@ -71,7 +71,7 @@
         captureBtn.disabled = true;
 
         // Send to backend with type='staff'
-        fetch("{% url 'api-mark-face' %}", {
+        fetch("{% url 'mark-face-attendance' %}", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

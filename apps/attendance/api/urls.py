@@ -1,41 +1,38 @@
 from django.urls import path
-from apps.attendance.api.views import (
-    StudentAttendanceListCreateAPIView, StudentAttendanceDetailAPIView,
-    StaffAttendanceListCreateAPIView, StaffAttendanceDetailAPIView,
-    HostelAttendanceListCreateAPIView, HostelAttendanceDetailAPIView,
-    TransportAttendanceListCreateAPIView, TransportAttendanceDetailAPIView,
-    MarkQRAttendanceAPIView, StudentListByClassAPIView, BulkAttendanceUpdateAPIView,
-    MarkFaceAttendanceAPIView, AttendanceStatsAPIView, AttendanceHistoryListAPIView, 
-    AttendanceExportAPIView
-)
+from . import views
 
 urlpatterns = [
-    # QR & Face Marking
-    path('mark-qr/', MarkQRAttendanceAPIView.as_view(), name='api-mark-qr'),
-    path('mark-face/', MarkFaceAttendanceAPIView.as_view(), name='api-mark-face'),
-    
-    # Bulk & Manual
-    path('students-by-class/', StudentListByClassAPIView.as_view(), name='api-students-by-class'),
-    path('bulk-update/', BulkAttendanceUpdateAPIView.as_view(), name='api-bulk-update'),
-    
-    # Dashboard & Reports
-    path('stats/', AttendanceStatsAPIView.as_view(), name='api-attendance-stats'),
-    path('history/', AttendanceHistoryListAPIView.as_view(), name='api-attendance-history'),
-    path('export/', AttendanceExportAPIView.as_view(), name='api-attendance-export'),
-
     # Student Attendance
-    path('student/', StudentAttendanceListCreateAPIView.as_view(), name='studentattendance-list'),
-    path('student/<uuid:pk>/', StudentAttendanceDetailAPIView.as_view(), name='studentattendance-detail'),
-
+    path('student/', views.StudentAttendanceListCreateAPIView.as_view(), name='student-attendance-list'),
+    path('student/<uuid:pk>/', views.StudentAttendanceDetailAPIView.as_view(), name='student-attendance-detail'),
+    
     # Staff Attendance
-    path('staff/', StaffAttendanceListCreateAPIView.as_view(), name='staffattendance-list'),
-    path('staff/<uuid:pk>/', StaffAttendanceDetailAPIView.as_view(), name='staffattendance-detail'),
-
+    path('staff/', views.StaffAttendanceListCreateAPIView.as_view(), name='staff-attendance-list'),
+    path('staff/<uuid:pk>/', views.StaffAttendanceDetailAPIView.as_view(), name='staff-attendance-detail'),
+    
     # Hostel Attendance
-    path('hostel/', HostelAttendanceListCreateAPIView.as_view(), name='hostelattendance-list'),
-    path('hostel/<uuid:pk>/', HostelAttendanceDetailAPIView.as_view(), name='hostelattendance-detail'),
-
+    path('hostel/', views.HostelAttendanceListCreateAPIView.as_view(), name='hostel-attendance-list'),
+    path('hostel/<uuid:pk>/', views.HostelAttendanceDetailAPIView.as_view(), name='hostel-attendance-detail'),
+    
     # Transport Attendance
-    path('transport/', TransportAttendanceListCreateAPIView.as_view(), name='transportattendance-list'),
-    path('transport/<uuid:pk>/', TransportAttendanceDetailAPIView.as_view(), name='transportattendance-detail'),
+    path('transport/', views.TransportAttendanceListCreateAPIView.as_view(), name='transport-attendance-list'),
+    path('transport/<uuid:pk>/', views.TransportAttendanceDetailAPIView.as_view(), name='transport-attendance-detail'),
+    
+    # QR Attendance
+    path('mark/qr/', views.MarkQRAttendanceAPIView.as_view(), name='mark-qr-attendance'),
+    
+    # Face Recognition (DeepFace)
+    path('mark/face/', views.MarkFaceAttendanceAPIView.as_view(), name='mark-face-attendance'),  # Legacy
+    path('mark/deepface/', views.MarkDeepFaceAttendanceAPIView.as_view(), name='mark-deepface-attendance'),  # New DeepFace
+    path('mark/deepface/batch/', views.DeepFaceBatchRecognitionAPIView.as_view(), name='deepface-batch-recognition'),
+    
+    # Bulk/Manual Attendance
+    path('students/by-class/', views.StudentListByClassAPIView.as_view(), name='student-list-by-class'),
+    path('bulk/update/', views.BulkAttendanceUpdateAPIView.as_view(), name='bulk-attendance-update'),
+    
+    # Dashboard & Reporting
+    path('stats/', views.AttendanceStatsAPIView.as_view(), name='attendance-stats'),
+    path('history/', views.AttendanceHistoryListAPIView.as_view(), name='attendance-history'),
+    path('export/', views.AttendanceExportAPIView.as_view(), name='attendance-export'),
+    path('dashboard/', views.AttendanceDashboardAPIView.as_view(), name='attendance-dashboard'),
 ]

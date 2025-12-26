@@ -8,6 +8,7 @@ from rest_framework.generics import (
     UpdateAPIView, DestroyAPIView, ListCreateAPIView,
     RetrieveUpdateDestroyAPIView
 )
+from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.throttling import UserRateThrottle
@@ -20,6 +21,8 @@ import logging
 from apps.core.permissions.mixins import (
     TenantRequiredMixin, RoleBasedViewMixin, PermissionRequiredMixin
 )
+from django.core.exceptions import ValidationError as DjangoValidationError
+
 from apps.core.services.audit_service import AuditService
 from apps.core.utils.tenant import get_current_tenant
 from apps.users.models import User
@@ -30,6 +33,25 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 # CUSTOM PERMISSIONS
 # ============================================================================
+
+
+# ============================================================================
+# CUSTOM EXCEPTIONS
+# ============================================================================
+
+class PermissionDenied(APIException):
+    """Custom Permission Denied exception"""
+    status_code = status.HTTP_403_FORBIDDEN
+    default_detail = 'You do not have permission to perform this action.'
+    default_code = 'permission_denied'
+
+
+class ValidationError(APIException):
+    """Custom Validation Error exception"""
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = 'Invalid input.'
+    default_code = 'invalid_input'
+
 
 class TenantPermission(BasePermission):
     """Permission to ensure user belongs to current tenant"""

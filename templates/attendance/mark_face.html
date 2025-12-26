@@ -59,25 +59,26 @@
             
             // Send to Backend
             try {
-                const res = await fetch("{% url 'api-mark-face' %}", {
+                const res = await fetch("{% url 'mark-face-attendance' %}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': '{{ csrf_token }}'
                     },
-                    body: JSON.stringify({ image: dataUrl })
+                    body: JSON.stringify({ image: dataUrl, type: 'student' })
                 });
                 
                 const data = await res.json();
                 
-                if (res.status === 200) {
-                    statusDiv.innerText = "Match Found: " + data.student.name;
+                if (res.ok && (data.success || data.message)) {
+                    const studentName = data.student_name || 'Student';
+                    statusDiv.innerText = "Match Found: " + studentName;
                     statusDiv.classList.replace('alert-info', 'alert-success');
                     
                     Swal.fire({
                         icon: 'success',
                         title: 'Attendance Marked',
-                        text: `Welcome, ${data.student.name}`,
+                        text: `Welcome, ${studentName}`,
                         timer: 2000,
                         showConfirmButton: false
                     });

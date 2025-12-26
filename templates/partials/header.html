@@ -16,7 +16,7 @@
             <!-- Tenant Logo/Name in Header (Mobile) -->
             <div class="d-lg-none d-flex align-items-center ms-2">
                 {% if tenant_logo %}
-                <img src="{{ tenant_logo.url }}" width="32" height="32" alt="{{ tenant_name }}" class="rounded-circle">
+                <img src="{{ tenant_logo.url }}" width="122" height="32" alt="{{ tenant_name }}" class="">
                 {% endif %}
                 <span class="ms-2 fw-bold text-dark d-none d-sm-inline">{{ tenant_name }}</span>
             </div>
@@ -212,14 +212,14 @@
             </div>
 
             <!-- User Profile -->
-            <div class="user-box dropdown px-3">
+            <div class="dropdown px-1">
                 <a class="d-flex align-items-center nav-link dropdown-toggle gap-3 dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     {% if request.user.avatar %}
                     <img src="{{ request.user.avatar.url }}" class="user-img" alt="{{ request.user.get_full_name }}">
                     {% else %}
                     <img src="{% static 'assets/images/avatars/avatar-2.png' %}" class="user-img" alt="user avatar">
                     {% endif %}
-                    <div class="user-info">
+                    <div class="user-info ps-1 d-none d-md-block">
                         <p class="user-name mb-0">
                             {% if request.user.get_full_name %}
                                 {{ request.user.get_full_name }}

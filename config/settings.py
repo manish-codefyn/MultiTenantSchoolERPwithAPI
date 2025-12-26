@@ -447,85 +447,15 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
-# Logging configuration
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "filters": {
-        "require_debug_true": {
-            "()": "django.utils.log.RequireDebugTrue",
-        },
-        "require_debug_false": {
-            "()": "django.utils.log.RequireDebugFalse",
-        },
-    },
-    "formatters": {
-        "verbose": {
-            "format": "{levelname} {asctime} {module} {message}",
-            "style": "{",
-        },
-        "simple": {
-            "format": "{levelname} {message}",
-            "style": "{",
-        },
-        "django.server": {
-            "()": "django.utils.log.ServerFormatter",
-            "format": "[{server_time}] {message}",
-            "style": "{",
-        },
-    },
-    "handlers": {
-        "console": {
-            "level": "INFO",
-            "filters": ["require_debug_true"],
-            "class": "logging.StreamHandler",
-            "formatter": "simple",
-        },
-        "file": {
-            "level": "INFO",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": LOGS_DIR / "django.log",
-            "maxBytes": 1024 * 1024 * 5,  # 5 MB
-            "backupCount": 5,
-            "formatter": "verbose",
-        },
-        "django.server": {
-            "level": "INFO",
-            "class": "logging.StreamHandler",
-            "formatter": "django.server",
-        },
-        "mail_admins": {
-            "level": "ERROR",
-            "filters": ["require_debug_false"],
-            "class": "django.utils.log.AdminEmailHandler",
-            "include_html": True,
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console", "file"],
-            "level": "INFO",
-            "propagate": False,
-        },
-        "django.server": {
-            "handlers": ["django.server"],
-            "level": "INFO",
-            "propagate": False,
-        },
-        "apps": {
-            "handlers": ["console", "file"],
-            "level": "INFO",
-            "propagate": False,
-        },
-    },
-}
+
+
 # Cache configuration (tenant-aware)
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/1",
+#     }
+# }
 # Celery configuration (tenant-aware)
 CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="redis://localhost:6379/0")
@@ -604,3 +534,144 @@ MESSAGE_TAGS = {
 
 # PDF Generation Configuration
 WKHTMLTOPDF_CMD = env("WKHTMLTOPDF_CMD", default=None)
+
+
+# DeepFace Configuration
+DEEPFACE_SETTINGS = {
+    'MODEL': 'Facenet',  # Options: VGG-Face, Facenet, OpenFace, DeepFace, DeepID, ArcFace, SFace
+    'METRIC': 'cosine',  # Options: cosine, euclidean, euclidean_l2
+    'THRESHOLD': 0.4,    # Lower = more strict (Facenet: 0.4, VGG-Face: 0.55)
+    'DETECTOR_BACKEND': 'opencv',  # Options: opencv, mtcnn, retinaface, ssd, dlib
+    'ENFORCE_DETECTION': True,
+    'ALIGN': True,
+    'NORMALIZATION': 'base',
+    
+    # Cache settings
+    'CACHE_TIMEOUT': 604800,  # 7 days in seconds
+    'MAX_IMAGE_SIZE': 10 * 1024 * 1024,  # 10MB
+    'ALLOWED_EXTENSIONS': ['.jpg', '.jpeg', '.png', '.bmp', '.webp'],
+    
+    # Performance
+    'GPU_ENABLED': False,  # Set True if you have CUDA
+    'BATCH_SIZE': 10,
+}
+
+# Cache Configuration (Using Local Memory - install django-redis for production)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'default-cache',
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000
+        }
+    },
+    'deepface': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'deepface-cache',
+        'OPTIONS': {
+            'MAX_ENTRIES': 500
+        }
+    }
+}
+
+# Logging Configuration
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+    },
+
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+        "django.server": {
+            "()": "django.utils.log.ServerFormatter",
+            "format": "[{server_time}] {message}",
+            "style": "{",
+        },
+    },
+
+    "handlers": {
+        # Console
+        "console": {
+            "level": "INFO",
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+
+        # Main Django file log
+        "file": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOGS_DIR / "django.log",
+            "maxBytes": 1024 * 1024 * 5,
+            "backupCount": 5,
+            "formatter": "verbose",
+        },
+
+        # DeepFace / Attendance specific log
+        "deepface_file": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOGS_DIR / "deepface.log",
+            "maxBytes": 1024 * 1024 * 5,
+            "backupCount": 3,
+            "formatter": "verbose",
+        },
+
+        "django.server": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "django.server",
+        },
+
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+            "include_html": True,
+        },
+    },
+
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+
+        "django.server": {
+            "handlers": ["django.server"],
+            "level": "INFO",
+            "propagate": False,
+        },
+
+        "apps": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+
+        # DeepFace / Attendance service logger
+        "apps.attendance.services.face_recognition_service": {
+            "handlers": ["deepface_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
