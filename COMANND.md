@@ -45,6 +45,27 @@ ALTER ROLE codefyn SET timezone TO 'Asia/Kolkata';
 GRANT ALL PRIVILEGES ON DATABASE eduerp_v6 TO codefyn;
 \q
 
+docker-compose exec db sh -c 'psql -U "$DB_USER" -d "$DB_NAME"'
+
+
+eduerp_v6=# CREATE USER codefyn WITH PASSWORD 'Jaimaa@007';
+ERROR:  role "codefyn" already exists
+eduerp_v6=# ALTER ROLE codefyn SET client_encoding TO 'utf8';
+ALTER ROLE
+eduerp_v6=# ALTER ROLE codefyn SET default_transaction_isolation TO 'read
+eduerp_v6'# ALTER ROLE codefyn SET timezone TO 'Asia/Kolkata';
+eduerp_v6'#
+eduerp_v6'# GRANT ALL PRIVILEGES ON DATABASE eduerp_v6 TO codefyn;
+eduerp_v6'# CREATE SCHEMA IF NOT EXISTS public;
+eduerp_v6'# ALTER SCHEMA public OWNER TO codefyn;
+eduerp_v6'# GRANT ALL ON SCHEMA public TO codefyn;
+eduerp_v6'# ALTER ROLE codefyn SET search_path = public;
+eduerp_v6'# ALTER DATABASE eduerp_v6 SET search_path TO public;
+eduerp_v6'# \q
+Use control-D to quit.
+eduerp_v6'#
+\q
+
 🟦 STEP 7 — Configure Django-Tenants Settings (VERY IMPORTANT)
 
 In config/settings.py:
@@ -137,3 +158,6 @@ http://public.localhost:8000/admin/
 
 TENANT ADMIN
 http://abc-school.localhost:8000/admin/
+
+
+docker-compose exec db sh -c 'psql -U "$DB_USER" -d "$DB_NAME"'

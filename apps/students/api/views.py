@@ -20,7 +20,7 @@ from apps.core.api.views import (
     BaseRetrieveUpdateDestroyAPIView,
     BulkOperationAPIView, ExportAPIView, DashboardAPIView
 )
-
+from rest_framework.generics import ListAPIView
 # Models
 from apps.students.models import (
     Student, Guardian, StudentAddress, StudentDocument,
@@ -55,16 +55,25 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 # STUDENT CRUD VIEWS
 # ============================================================================
-
 class StudentListAPIView(BaseListAPIView):
     """
-    List all students with filtering, searching, and pagination
+    List all students with filtering, searching, ordering and summary
     """
-    model = Student
     serializer_class = StudentListSerializer
-    search_fields = ['first_name', 'last_name', 'middle_name', 
-                     'admission_number', 'roll_number', 'reg_no',
-                     'personal_email', 'institutional_email']
+    model = Student
+    roles_required = ['admin', 'teacher', 'hr_manager', 'principal', 'vice_principal']
+
+    search_fields = [
+        'first_name',
+        'last_name',
+        'middle_name',
+        'admission_number',
+        'roll_number',
+        'reg_no',
+        'personal_email',
+        'institutional_email',
+    ]
+
     filterset_fields = {
         'current_class': ['exact'],
         'section': ['exact'],
@@ -80,102 +89,106 @@ class StudentListAPIView(BaseListAPIView):
         'enrollment_date': ['gte', 'lte', 'exact'],
         'date_of_birth': ['gte', 'lte', 'exact'],
     }
-    ordering_fields = ['first_name', 'last_name', 'admission_number', 
-                       'roll_number', 'enrollment_date', 'date_of_birth',
-                       'created_at', 'updated_at']
+
+    ordering_fields = [
+        'first_name',
+        'last_name',
+        'admission_number',
+        'roll_number',
+        'enrollment_date',
+        'date_of_birth',
+        'created_at',
+        'updated_at',
+    ]
+
     ordering = ['first_name', 'last_name']
-    
+
+    # ----------------------------------------
+    # Custom filters
+    # ----------------------------------------
     def apply_custom_filters(self, queryset):
-        """Apply custom filters"""
         request = self.request
-        
-        # Filter by admission year
-        admission_year = request.query_params.get('admission_year')
-        if admission_year:
-            queryset = queryset.filter(enrollment_date__year=admission_year)
-        
-        # Filter by age range
-        min_age = request.query_params.get('min_age')
-        max_age = request.query_params.get('max_age')
-        if min_age or max_age:
-            # Calculate date range for age filtering
-            today = timezone.now().date()
-            if min_age:
-                max_birth_date = today.replace(year=today.year - int(min_age))
-                queryset = queryset.filter(date_of_birth__lte=max_birth_date)
-            if max_age:
-                min_birth_date = today.replace(year=today.year - int(max_age) - 1)
-                queryset = queryset.filter(date_of_birth__gte=min_birth_date)
-        
-        # Filter by academic performance
-        min_cgpa = request.query_params.get('min_cgpa')
-        max_cgpa = request.query_params.get('max_cgpa')
-        if min_cgpa or max_cgpa:
-            if min_cgpa:
-                queryset = queryset.filter(cumulative_grade_point__gte=float(min_cgpa))
-            if max_cgpa:
-                queryset = queryset.filter(cumulative_grade_point__lte=float(max_cgpa))
-        
-        # Filter by attendance percentage
-        min_attendance = request.query_params.get('min_attendance')
-        if min_attendance:
-            # This is a simplified filter - you might need a more complex query
-            min_attendance = float(min_attendance)
-            # You might need to annotate queryset with attendance percentage
-        
-        # Filter by outstanding fees
-        has_outstanding_fees = request.query_params.get('has_outstanding_fees')
+
+        # Admission year
+        admission_year = request.query_params.get("admission_year")
+        if admission_year and admission_year.isdigit():
+            queryset = queryset.filter(enrollment_date__year=int(admission_year))
+
+        # Age filtering
+        today = timezone.now().date()
+
+        min_age = request.query_params.get("min_age")
+        max_age = request.query_params.get("max_age")
+
+        if min_age and min_age.isdigit():
+            max_birth_date = today.replace(year=today.year - int(min_age))
+            queryset = queryset.filter(date_of_birth__lte=max_birth_date)
+
+        if max_age and max_age.isdigit():
+            min_birth_date = today.replace(year=today.year - int(max_age) - 1)
+            queryset = queryset.filter(date_of_birth__gte=min_birth_date)
+
+        # CGPA filtering
+        min_cgpa = request.query_params.get("min_cgpa")
+        max_cgpa = request.query_params.get("max_cgpa")
+
+        if min_cgpa:
+            queryset = queryset.filter(cumulative_grade_point__gte=float(min_cgpa))
+
+        if max_cgpa:
+            queryset = queryset.filter(cumulative_grade_point__lte=float(max_cgpa))
+
+        # Outstanding fees
+        has_outstanding_fees = request.query_params.get("has_outstanding_fees")
         if has_outstanding_fees:
-            if has_outstanding_fees.lower() == 'true':
-                # Filter students with pending invoices
-                from apps.finance.models import Invoice
+            from apps.finance.models import Invoice
+
+            if has_outstanding_fees.lower() == "true":
                 student_ids = Invoice.objects.filter(
-                    student__in=queryset,
-                    status__in=['PENDING', 'OVERDUE']
-                ).values_list('student_id', flat=True).distinct()
+                    status__in=["PENDING", "OVERDUE"]
+                ).values_list("student_id", flat=True)
+
                 queryset = queryset.filter(id__in=student_ids)
-        
+
         return queryset
-    
-    def get_queryset(self):
-        """Override to add annotations"""
-        queryset = super().get_queryset()
-        
-        # Annotate with attendance percentage for current academic year
-        current_year = AcademicYear.objects.filter(
-            tenant=self.tenant,
-            is_current=True
-        ).first()
-        
-        if current_year:
-            # This is a simplified example - you might need to adjust based on your model
-            pass
-        
-        return queryset
-    
+
+    # ----------------------------------------
+    # Custom response with summary
+    # ----------------------------------------
     def list(self, request, *args, **kwargs):
-        """Custom list response with summary statistics"""
         response = super().list(request, *args, **kwargs)
-        
-        # Add summary statistics to response
-        if not request.query_params.get('page'):
-            queryset = self.filter_queryset(self.get_queryset())
-            
-            # Add counts
-            response.data['summary'] = {
-                'total_students': queryset.count(),
-                'active_students': queryset.filter(status='ACTIVE').count(),
-                'inactive_students': queryset.filter(status='INACTIVE').count(),
-                'alumni_students': queryset.filter(status='ALUMNI').count(),
-                'by_gender': {
-                    'male': queryset.filter(gender='M').count(),
-                    'female': queryset.filter(gender='F').count(),
-                    'other': queryset.filter(gender='O').count(),
+
+        # Calculate summary on the filtered queryset
+        # Note: We must re-apply filters to get accurate counts for the summary
+        # effectively doing two queries, but necessary for accurate summary of "what calls matched"
+        queryset = self.filter_queryset(self.get_queryset())
+
+        summary = {
+            "total_students": queryset.count(),
+            "active_students": queryset.filter(status="ACTIVE").count(),
+            "inactive_students": queryset.filter(status="INACTIVE").count(),
+            "alumni_students": queryset.filter(status="ALUMNI").count(),
+            "by_gender": {
+                "male": queryset.filter(gender="M").count(),
+                "female": queryset.filter(gender="F").count(),
+                "other": queryset.filter(gender="O").count(),
+            },
+        }
+
+        # Pagination-safe response handling
+        if isinstance(response.data, dict):
+            # If already paginated (has 'results'), just add summary
+            # If somehow not paginated (unlikely with BaseListAPIView), wrap it
+            if "results" in response.data:
+                response.data["summary"] = summary
+            else:
+                 # Should not happen with StandardResultsSetPagination but for safety
+                response.data = {
+                    "results": response.data,
+                    "summary": summary,
                 }
-            }
         
         return response
-
 
 class StudentCreateAPIView(BaseCreateAPIView):
     """

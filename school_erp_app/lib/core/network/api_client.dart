@@ -21,7 +21,10 @@ class ApiClient {
         // Add auth token if available
         final token = await _storage.read(key: 'access_token');
         if (token != null) {
+          print('Adding Auth Token: ${token.substring(0, 5)}...');
           options.headers['Authorization'] = 'Bearer $token';
+        } else {
+          print('⚠️ Auth Token MISSING in request!');
         }
         
         // Add X-Tenant-ID header for tenant selection (Strategy 3)

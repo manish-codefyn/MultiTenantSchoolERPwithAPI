@@ -11,11 +11,14 @@ from rest_framework.generics import (
 from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Q
+from django.db.models import Q, Sum
+from django.http import Http404
+from django.db import transaction
 import logging
 
 from apps.core.permissions.mixins import (
@@ -140,7 +143,7 @@ class BaseAPIView(APIView):
     Base API view with authentication, tenant isolation, and audit logging
     """
     # Authentication
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    authentication_classes = [JWTAuthentication, TokenAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticated, TenantPermission, RolePermission]
     
     # Throttling
@@ -242,10 +245,18 @@ class BaseAPIView(APIView):
     
     def handle_exception(self, exc):
         """Handle exceptions with proper API response"""
+        from rest_framework.exceptions import NotAuthenticated, AuthenticationFailed
+        
+        # Log error
         logger.error(f"API error in {self.__class__.__name__}: {exc}", exc_info=True)
         
         # Return appropriate error response
-        if isinstance(exc, PermissionDenied):
+        if isinstance(exc, (NotAuthenticated, AuthenticationFailed)):
+             return Response(
+                {'error': 'Authentication required', 'detail': str(exc)},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        elif isinstance(exc, PermissionDenied):
             return Response(
                 {'error': 'Permission denied', 'detail': str(exc)},
                 status=status.HTTP_403_FORBIDDEN
