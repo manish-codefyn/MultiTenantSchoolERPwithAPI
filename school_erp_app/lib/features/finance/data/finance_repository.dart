@@ -11,7 +11,7 @@ class FinanceRepository {
 
   Future<List<FeeStructure>> getFeeStructures() async {
     final dio = _ref.read(apiClientProvider).client;
-    final response = await dio.get('finance/feestructures/');
+    final response = await dio.get('finance/fee-structures/');
     
     final data = response.data;
     final List<dynamic> results = (data is Map && data.containsKey('results')) 

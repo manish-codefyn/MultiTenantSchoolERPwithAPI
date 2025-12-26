@@ -11,8 +11,12 @@ from apps.events.api.views import (
     EventFeedbackListCreateAPIView, EventFeedbackDetailAPIView,
     RecurringEventPatternListCreateAPIView, RecurringEventPatternDetailAPIView
 )
+from .dashboard_view import EventsDashboardAPIView
 
 urlpatterns = [
+    # Dashboard
+    path('dashboard/', EventsDashboardAPIView.as_view(), name='dashboard'),
+
     # Event Categories
     path('categories/', EventCategoryListCreateAPIView.as_view(), name='eventcategory-list'),
     path('categories/<uuid:pk>/', EventCategoryDetailAPIView.as_view(), name='eventcategory-detail'),

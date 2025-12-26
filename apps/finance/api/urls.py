@@ -18,8 +18,12 @@ from .views import (
     BankAccountListCreateAPIView, BankAccountDetailAPIView,
     FinancialReportListCreateAPIView, FinancialReportDetailAPIView
 )
+from .dashboard_view import FinanceDashboardAPIView
 
 urlpatterns = [
+    # Dashboard
+    path('dashboard/', FinanceDashboardAPIView.as_view(), name='dashboard'),
+
     # Fee Structure
     path('fee-structures/', FeeStructureListCreateAPIView.as_view(), name='fee-structure-list'),
     path('fee-structures/<uuid:pk>/', FeeStructureDetailAPIView.as_view(), name='fee-structure-detail'),

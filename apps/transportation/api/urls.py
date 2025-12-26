@@ -8,9 +8,13 @@ from apps.transportation.api.views import (
     MaintenanceRecordListCreateAPIView, MaintenanceRecordDetailAPIView,
     FuelRecordListCreateAPIView, FuelRecordDetailAPIView
 )
+from .dashboard_view import TransportDashboardAPIView
 
 
 urlpatterns = [
+    # Dashboard
+    path('dashboard/', TransportDashboardAPIView.as_view(), name='dashboard'),
+
     # Vehicles
     path('vehicles/', VehicleListCreateAPIView.as_view(), name='vehicle-list'),
     path('vehicles/<uuid:pk>/', VehicleDetailAPIView.as_view(), name='vehicle-detail'),

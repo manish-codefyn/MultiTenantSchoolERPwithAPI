@@ -35,11 +35,15 @@ from .views import (
     StudentDocumentVerifyAPIView,
     StudentDocumentRejectAPIView
 )
+from .dashboard_view import StudentStatsDashboardAPIView
 
 urlpatterns = [
     # ==================================================================
     # MAIN STUDENT ENDPOINTS
     # ==================================================================
+    
+    # Dashboard (Aggregate)
+    path('dashboard/', StudentStatsDashboardAPIView.as_view(), name='dashboard-aggregate'),
     
     # List and Create
     path('', StudentListAPIView.as_view(), name='student-list'),

@@ -25,9 +25,13 @@ class DashboardScreen extends ConsumerWidget {
             case 2: context.push('/academics'); break;
             case 3: context.push('/hr/staff'); break;
             case 4: context.push('/attendance'); break;
-            case 5: context.push('/finance/fees'); break;
+            case 5: context.push('/finance'); break;
             case 6: context.push('/transport'); break;
             case 7: context.push('/hostel'); break;
+            case 8: context.push('/events'); break;
+            case 9: context.push('/exams'); break;
+            case 10: context.push('/communications'); break;
+            case 11: context.push('/assignments'); break;
           }
         },
         children: const [
@@ -43,6 +47,10 @@ class DashboardScreen extends ConsumerWidget {
           NavigationDrawerDestination( icon: Icon(Icons.account_balance_wallet_rounded), label: Text('Finance')),
           NavigationDrawerDestination( icon: Icon(Icons.directions_bus_rounded), label: Text('Transport')),
           NavigationDrawerDestination( icon: Icon(Icons.bed_rounded), label: Text('Hostel')),
+          NavigationDrawerDestination( icon: Icon(Icons.event_rounded), label: Text('Events')),
+          NavigationDrawerDestination( icon: Icon(Icons.assignment_rounded), label: Text('Exams')),
+          NavigationDrawerDestination( icon: Icon(Icons.chat_bubble_outline_rounded), label: Text('Communications')),
+          NavigationDrawerDestination( icon: Icon(Icons.assignment_ind_rounded), label: Text('Assignments')),
         ],
       ),
       body: statsAsync.when(
@@ -158,7 +166,7 @@ class DashboardScreen extends ConsumerWidget {
                     gradient: const LinearGradient(
                       colors: [Color(0xFFEC4899), Color(0xFFDB2777)],
                     ),
-                    onTap: () => context.push('/finance/fees'),
+                    onTap: () => context.push('/finance'),
                   ),
                 ],
               ),

@@ -7,11 +7,16 @@ from apps.exams.api.views import (
     SubjectResultListCreateAPIView, SubjectResultDetailAPIView,
     MarkSheetListCreateAPIView, MarkSheetDetailAPIView,
     CompartmentExamListCreateAPIView, CompartmentExamDetailAPIView,
+    CompartmentExamListCreateAPIView, CompartmentExamDetailAPIView,
     ResultStatisticsListCreateAPIView, ResultStatisticsDetailAPIView
 )
+from .dashboard_view import ExamsDashboardAPIView
 
 
 urlpatterns = [
+    # Dashboard
+    path('dashboard/', ExamsDashboardAPIView.as_view(), name='dashboard'),
+
     # Exam Types
     path('types/', ExamTypeListCreateAPIView.as_view(), name='examtype-list'),
     path('types/<uuid:pk>/', ExamTypeDetailAPIView.as_view(), name='examtype-detail'),

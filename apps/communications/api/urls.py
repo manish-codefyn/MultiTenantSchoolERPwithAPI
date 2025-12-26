@@ -4,10 +4,15 @@ from apps.communications.api.views import (
     CommunicationTemplateListCreateAPIView, CommunicationTemplateDetailAPIView,
     CommunicationCampaignListCreateAPIView, CommunicationCampaignDetailAPIView,
     CommunicationListCreateAPIView, CommunicationDetailAPIView,
+    CommunicationListCreateAPIView, CommunicationDetailAPIView,
     CommunicationAttachmentListCreateAPIView, CommunicationAttachmentDetailAPIView
 )
+from .dashboard_view import CommunicationsDashboardAPIView
 
 urlpatterns = [
+    # Dashboard
+    path('dashboard/', CommunicationsDashboardAPIView.as_view(), name='dashboard'),
+
     # Channels
     path('channels/', CommunicationChannelListCreateAPIView.as_view(), name='communicationchannel-list'),
     path('channels/<uuid:pk>/', CommunicationChannelDetailAPIView.as_view(), name='communicationchannel-detail'),

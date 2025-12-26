@@ -13,11 +13,16 @@ from apps.hostel.api.views import (
     DailyMenuItemListCreateAPIView, DailyMenuItemDetailAPIView,
     HostelMessSubscriptionListCreateAPIView, HostelMessSubscriptionDetailAPIView,
     MessAttendanceListCreateAPIView, MessAttendanceDetailAPIView,
+    MessAttendanceListCreateAPIView, MessAttendanceDetailAPIView,
     MessFeedbackListCreateAPIView, MessFeedbackDetailAPIView
 )
+from .dashboard_view import HostelDashboardAPIView
 
 
 urlpatterns = [
+    # Dashboard
+    path('dashboard/', HostelDashboardAPIView.as_view(), name='dashboard'),
+
     # Infrastructure
     path('amenities/', AmenityListCreateAPIView.as_view(), name='amenity-list'),
     path('amenities/<uuid:pk>/', AmenityDetailAPIView.as_view(), name='amenity-detail'),

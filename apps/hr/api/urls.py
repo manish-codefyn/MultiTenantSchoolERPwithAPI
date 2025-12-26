@@ -28,7 +28,12 @@ from .views import (
     AssetAssignmentListCreateAPIView, AssetAssignmentDetailAPIView
 )
 
+from .dashboard_view import StaffDashboardAPIView
+
 urlpatterns = [
+    # Dashboard
+    path('dashboard/', StaffDashboardAPIView.as_view(), name='dashboard'),
+
     # Department
     path('departments/', DepartmentListCreateAPIView.as_view(), name='department-list'),
     path('departments/<uuid:pk>/', DepartmentDetailAPIView.as_view(), name='department-detail'),
