@@ -22,6 +22,7 @@ urlpatterns = [
     path('mark/qr/', views.MarkQRAttendanceAPIView.as_view(), name='mark-qr-attendance'),
     
     # Face Recognition (DeepFace)
+    path('mark-face/', views.MarkFaceAttendanceAPIView.as_view(), name='mark-face-attendance-alias'), # Support for Flutter App
     path('mark/face/', views.MarkFaceAttendanceAPIView.as_view(), name='mark-face-attendance'),  # Legacy
     path('mark/deepface/', views.MarkDeepFaceAttendanceAPIView.as_view(), name='mark-deepface-attendance'),  # New DeepFace
     path('mark/deepface/batch/', views.DeepFaceBatchRecognitionAPIView.as_view(), name='deepface-batch-recognition'),

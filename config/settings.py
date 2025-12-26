@@ -26,6 +26,9 @@ SECRET_KEY = env("SECRET_KEY", default="django-insecure-your-secret-key-here")
 DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
+# To allow all tenant subdomains, add your base domain with a leading dot.
+# Example: ALLOWED_HOSTS=.schoolerp.com,localhost
+# This allows: schoolerp.com, tenant1.schoolerp.com, tenant2.schoolerp.com, etc.
 # Multi-tenant configuration
 
 
