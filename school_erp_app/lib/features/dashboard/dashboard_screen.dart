@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../shared/widgets/stats_card.dart';
 import '../../core/theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'presentation/dashboard_controller.dart';
 import '../../core/theme/theme_controller.dart';
 import '../auth/presentation/auth_controller.dart'; // From features/dashboard to features/auth
@@ -15,112 +16,123 @@ class DashboardScreen extends ConsumerWidget {
     final statsAsync = ref.watch(dashboardStatsProvider);
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      drawer: NavigationDrawer(
-        onDestinationSelected: (index) {
-          Navigator.pop(context); // Close drawer
-          switch (index) {
-            case 0: break;
-            case 1: context.push('/students'); break;
-            case 2: context.push('/academics'); break;
-            case 3: context.push('/hr/staff'); break;
-            case 4: context.push('/attendance'); break;
-            case 5: context.push('/finance'); break;
-            case 6: context.push('/transport'); break;
-            case 7: context.push('/hostel'); break;
-            case 8: context.push('/events'); break;
-            case 9: context.push('/exams'); break;
-            case 10: context.push('/communications'); break;
-            case 11: context.push('/assignments'); break;
-          }
-        },
-        children: const [
-          Padding(
-            padding: EdgeInsets.fromLTRB(28, 16, 16, 10),
-            child: Text('Menu', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          ),
-          NavigationDrawerDestination( icon: Icon(Icons.dashboard_rounded), label: Text('Dashboard')),
-          NavigationDrawerDestination( icon: Icon(Icons.people_rounded), label: Text('Students')),
-          NavigationDrawerDestination( icon: Icon(Icons.school_rounded), label: Text('Academics')),
-          NavigationDrawerDestination( icon: Icon(Icons.people_outline_rounded), label: Text('Staff')),
-          NavigationDrawerDestination( icon: Icon(Icons.calendar_today_rounded), label: Text('Attendance')),
-          NavigationDrawerDestination( icon: Icon(Icons.account_balance_wallet_rounded), label: Text('Finance')),
-          NavigationDrawerDestination( icon: Icon(Icons.directions_bus_rounded), label: Text('Transport')),
-          NavigationDrawerDestination( icon: Icon(Icons.bed_rounded), label: Text('Hostel')),
-          NavigationDrawerDestination( icon: Icon(Icons.event_rounded), label: Text('Events')),
-          NavigationDrawerDestination( icon: Icon(Icons.assignment_rounded), label: Text('Exams')),
-          NavigationDrawerDestination( icon: Icon(Icons.chat_bubble_outline_rounded), label: Text('Communications')),
-          NavigationDrawerDestination( icon: Icon(Icons.assignment_ind_rounded), label: Text('Assignments')),
-        ],
+      backgroundColor: AppTheme.bodyBackground,
+      drawer: Drawer(
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(topRight: Radius.circular(0), bottomRight: Radius.circular(0)),
+        ),
+        backgroundColor: Colors.white,
+        child: Column(
+          children: [
+             // Rocker Sidebar Header
+             Container(
+               height: 60,
+               padding: const EdgeInsets.symmetric(horizontal: 16),
+               decoration: const BoxDecoration(
+                 border: Border(bottom: BorderSide(color: AppTheme.borderColor)),
+               ),
+               child: Row(
+                 children: [
+                   Image.asset('assets/images/app_logo.png', height: 30, errorBuilder: (_,__,___) => const Icon(Icons.school, color: AppTheme.primaryBlue, size: 30)),
+                   const SizedBox(width: 10),
+                   Expanded(
+                     child: Text(
+                       statsAsync.value?['tenantName'] ?? 'School ERP', 
+                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
+                       overflow: TextOverflow.ellipsis,
+                     ),
+                   ),
+                   // Toggle Icon (Visual only)
+                   const Icon(Icons.arrow_back, size: 18, color: AppTheme.primaryBlue),
+                 ],
+               ),
+             ),
+             
+             Expanded(
+               child: SingleChildScrollView(
+                 padding: const EdgeInsets.only(top: 10),
+                 child: Column(
+                   children: [
+                     _buildDrawerItem(context, 'Dashboard', Icons.home_filled, onTap: () {}), // Current
+                     _buildDrawerItem(context, 'Students', Icons.people_outline_rounded, onTap: () => context.push('/students')),
+                     _buildDrawerItem(context, 'Academics', Icons.school_outlined, onTap: () => context.push('/academics')),
+                     _buildDrawerItem(context, 'Staff', Icons.badge_outlined, onTap: () => context.push('/hr/staff')),
+                     _buildDrawerItem(context, 'Attendance', Icons.calendar_today_outlined, onTap: () => context.push('/attendance')),
+                     _buildDrawerItem(context, 'Finance', Icons.account_balance_wallet_outlined, onTap: () => context.push('/finance')),
+                     _buildDrawerItem(context, 'Transport', Icons.directions_bus_outlined, onTap: () => context.push('/transport')),
+                     _buildDrawerItem(context, 'Hostel', Icons.bed_outlined, onTap: () => context.push('/hostel')),
+                     _buildDrawerItem(context, 'Events', Icons.event_outlined, onTap: () => context.push('/events')),
+                     _buildDrawerItem(context, 'Exams', Icons.assignment_outlined, onTap: () => context.push('/exams')),
+                     _buildDrawerItem(context, 'Communications', Icons.chat_bubble_outline_rounded, onTap: () => context.push('/communications')),
+                     _buildDrawerItem(context, 'Assignments', Icons.assignment_ind_outlined, onTap: () => context.push('/assignments')),
+                   ],
+                 ),
+               ),
+             )
+          ],
+        ),
       ),
       body: statsAsync.when(
         data: (stats) => CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            SliverAppBar.large(
-              expandedHeight: 120,
+            SliverAppBar(
               pinned: true,
-              stretch: true,
-              backgroundColor: Theme.of(context).primaryColor,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  'Dashboard',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-                background: Container(
-                  decoration: BoxDecoration(
-                    gradient: AppTheme.primaryGradient,
-                  ),
-                ),
-              ),
+              floating: true,
+              backgroundColor: Colors.white,
+              elevation: 4,
+              shadowColor: const Color(0xffdadafd).withOpacity(0.5),
               leading: Builder(
                 builder: (context) => IconButton(
-                  icon: const Icon(Icons.menu_rounded, color: Colors.white),
+                  icon: const Icon(Icons.menu, color: AppTheme.primaryBlue),
                   onPressed: () => Scaffold.of(context).openDrawer(),
                 ),
               ),
+              title: Text(
+                'Dashboard', 
+                style: GoogleFonts.roboto(color: AppTheme.textColor, fontWeight: FontWeight.bold),
+              ),
               actions: [
-                IconButton(
-                  icon: const Icon(Icons.dark_mode_outlined, color: Colors.white),
-                  onPressed: () => ref.read(themeControllerProvider.notifier).toggleTheme(),
+                 IconButton(
+                  icon: const Icon(Icons.search, color: Color(0xFF5F5F5F)),
+                  onPressed: () {},
                 ),
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.person_outline_rounded, color: Colors.white),
-                  onSelected: (value) {
-                    if (value == 'logout') {
-                      ref.read(authControllerProvider.notifier).logout();
-                      context.go('/login');
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(value: 'profile', child: Text('Profile')),
-                    const PopupMenuItem(value: 'settings', child: Text('Settings')),
-                    const PopupMenuItem(value: 'logout', child: Text('Logout')),
-                  ],
+                 IconButton(
+                  icon: const Icon(Icons.notifications_outlined, color: Color(0xFF5F5F5F)),
+                  onPressed: () {},
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundColor: Colors.grey[200],
+                    child: const Icon(Icons.person, color: Colors.grey),
+                  ),
                 ),
               ],
             ),
             SliverPadding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(24), // Rocker has good padding
               sliver: SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (stats['tenantName'] != null)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.only(bottom: 24),
                         child: Text(
                           'Welcome back, ${stats['tenantName']}',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                color: Colors.grey[800],
-                                fontWeight: FontWeight.bold,
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: AppTheme.textColor,
+                                fontWeight: FontWeight.w500,
                               ),
                         ),
                       ),
                     
-                    const Text(
-                      "Overview",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+                    Text(
+                      "Overview".toUpperCase(),
+                      style: GoogleFonts.roboto(fontSize: 14, fontWeight: FontWeight.w500, color: const Color(0xFFB0AFAF), letterSpacing: 0.5),
                     ),
                     const SizedBox(height: 16),
                   ],
@@ -128,69 +140,66 @@ class DashboardScreen extends ConsumerWidget {
               ),
             ),
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               sliver: SliverGrid.count(
                 crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.85, // Taller cards
+                crossAxisSpacing: 24,
+                mainAxisSpacing: 24,
+                childAspectRatio: 1.1,
                 children: [
                   StatsCard(
                     title: 'Students',
                     value: stats['studentCount'].toString(),
-                    icon: Icons.people_rounded,
+                    icon: Icons.people_outline,
                     onTap: () => context.push('/students'),
+                    // Rocker Style Cards are white with shadow, handled by Theme, no gradient by default usually, but we keep gradient if user likes it or keep it white?
+                    // User said "same style". Rocker cards in widgets.html typically white.
+                    // Let's rely on updated CardTheme but StatsCard might need adjustment.
                   ),
                   StatsCard(
                     title: 'Staff',
                     value: stats['staffCount'].toString(),
-                    icon: Icons.people_outline_rounded,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF10B981), Color(0xFF059669)],
-                    ),
+                    icon: Icons.badge_outlined,
+                     gradient: const LinearGradient(colors: [Color(0xFF17A00E), Color(0xFF24C41A)]), // Custom Green
                     onTap: () => context.push('/hr/staff'),
                   ),
                   StatsCard(
                     title: 'Attendance',
                     value: '92%',
-                    icon: Icons.check_circle_outline_rounded,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
-                    ),
+                    icon: Icons.check_circle_outline,
+                     gradient: const LinearGradient(colors: [Color(0xFFF41127), Color(0xFFFF4D60)]), // Custom Red
                     onTap: () => context.push('/attendance'),
                   ),
                   StatsCard(
                     title: 'Fees',
                     value: stats['feeCollection'].toString(),
-                    icon: Icons.attach_money_rounded,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFEC4899), Color(0xFFDB2777)],
-                    ),
+                    icon: Icons.attach_money,
+                    gradient: const LinearGradient(colors: [Color(0xFFFFC107), Color(0xFFFFD555)]), // Custom Yellow
                     onTap: () => context.push('/finance'),
                   ),
                 ],
               ),
             ),
             SliverPadding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(24),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                    const SizedBox(height: 24),
-                   const Text(
-                     "Analysis",
-                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
-                   ),
+                   Text(
+                      "Analysis".toUpperCase(),
+                      style: GoogleFonts.roboto(fontSize: 14, fontWeight: FontWeight.w500, color: const Color(0xFFB0AFAF), letterSpacing: 0.5),
+                    ),
                    const SizedBox(height: 16),
                    _buildAnalysisChart(context),
                    const SizedBox(height: 24),
-                   const Text(
-                     "Quick Actions",
-                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
-                   ),
+                   Text(
+                      "Quick Actions".toUpperCase(),
+                      style: GoogleFonts.roboto(fontSize: 14, fontWeight: FontWeight.w500, color: const Color(0xFFB0AFAF), letterSpacing: 0.5),
+                    ),
                    const SizedBox(height: 16),
-                   _buildManagementTile(context, 'Academics', 'Classes, Subjects & TimeTable', Icons.school_rounded, Colors.indigo, () => context.push('/academics')),
-                   _buildManagementTile(context, 'Transport', 'Routes, Vehicles & Drivers', Icons.directions_bus_rounded, Colors.blue, () => context.push('/transport')),
-                   _buildManagementTile(context, 'Hostel', 'Rooms & Allocations', Icons.bed_rounded, Colors.teal, () => context.push('/hostel')),
+                   _buildManagementTile(context, 'Academics', 'Classes, Subjects & TimeTable', Icons.school_outlined, Colors.indigo, () => context.push('/academics')),
+                   _buildManagementTile(context, 'Transport', 'Routes, Vehicles & Drivers', Icons.directions_bus_outlined, Colors.blue, () => context.push('/transport')),
+                   _buildManagementTile(context, 'Hostel', 'Rooms & Allocations', Icons.bed_outlined, Colors.teal, () => context.push('/hostel')),
                    const SizedBox(height: 40),
                 ]),
               ),
@@ -199,6 +208,24 @@ class DashboardScreen extends ConsumerWidget {
         ),
         loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
         error: (err, stack) => Scaffold(body: Center(child: Text('Error: $err'))),
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem(BuildContext context, String title, IconData icon, {required VoidCallback onTap}) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      child: ListTile(
+        onTap: () {
+          Navigator.pop(context);
+          onTap();
+        },
+        leading: Icon(icon, color: const Color(0xFF5f5f5f), size: 22), // Rocker icon color
+        title: Text(title, style: const TextStyle(color: Color(0xFF5f5f5f), fontSize: 15)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        hoverColor: AppTheme.primaryBlue.withOpacity(0.05),
+        // Note: Flutter standard ListTile hover doesn't support changing Icon color easily without state. 
+        // For strict adherence we'd need a custom stateful widget, but this is close.
       ),
     );
   }
@@ -304,3 +331,4 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 }
+

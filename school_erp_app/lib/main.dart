@@ -17,7 +17,7 @@ class MyApp extends ConsumerWidget {
     final themeMode = ref.watch(themeControllerProvider);
 
     return MaterialApp.router(
-      title: 'School ERP',
+      title: 'EduERP',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,

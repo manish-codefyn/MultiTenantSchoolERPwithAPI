@@ -7,6 +7,7 @@ import '../../features/tenant/presentation/tenant_selection_screen.dart';
 import '../../features/students/presentation/student_list_screen.dart';
 import '../../features/students/presentation/student_form_screen.dart';
 import '../../features/students/presentation/student_detail_screen.dart';
+import '../../features/students/presentation/student_wrapper_form_screen.dart';
 import '../../features/students/domain/student.dart';
 import '../../features/academics/presentation/academics_dashboard_screen.dart';
 import '../../features/hr/presentation/staff_list_screen.dart';
@@ -64,7 +65,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: 'add',
-            builder: (context, state) => const StudentFormScreen(),
+            builder: (context, state) => const StudentWrapperFormScreen(),
           ),
           GoRoute(
             path: 'detail',
